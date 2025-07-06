@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-// Simple interfaces
 export interface Movie {
   id: number;
   title: string;
