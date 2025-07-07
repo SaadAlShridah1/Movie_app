@@ -1,18 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-export interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  overview: string;
-  release_date: string;
-  vote_average: number;
-}
-
-export interface MovieResponse {
-  results: Movie[];
-}
+import {Movie, MovieDetails, MovieResponse } from '../interfaces/movie.interface';
 
 @Injectable({ providedIn: 'root' })
 export class MovieService {
@@ -21,7 +9,7 @@ export class MovieService {
   private baseUrl = 'https://api.themoviedb.org/3';
 
   async getMovies(): Promise<Movie[]> {
-    const url = `${this.baseUrl}/movie/popular?api_key=${this.apiKey}`;
+  const url = `${this.baseUrl}/movie/now_playing?api_key=${this.apiKey}`;
     const response = await fetch(url);
     
     if (!response.ok) {
@@ -31,9 +19,22 @@ export class MovieService {
     const data: MovieResponse = await response.json();
     return data.results;
   }
+    async getMovieDetails(movieId: number): Promise<MovieDetails> {
+      const url = `${this.baseUrl}/movie/${movieId}?api_key=${this.apiKey}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch movie details');
+      }
+      return await response.json();
+  }
 
-  getImageUrl(path: string): string {
+  getImageUrl(path: string | null, size: string = 'w500'): string {
     if (!path) return 'assets/placeholder.jpg';
-    return `https://image.tmdb.org/t/p/w500${path}`;
+    return `https://image.tmdb.org/t/p/${size}${path}`;
+  }
+
+  getBackdropUrl(path: string | null): string {
+    return this.getImageUrl(path, 'w1280');
   }
 }

@@ -1,6 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MovieService, Movie } from '../../services/movie.service';
+import { MovieService} from '../../services/movie.service';
+import { Movie } from '../../interfaces/movie.interface';
+import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-movies-list',
@@ -11,6 +15,7 @@ import { MovieService, Movie } from '../../services/movie.service';
 })
 export class MoviesListComponent {
   movieService = inject(MovieService); 
+  private router = inject(Router);
   movies: Movie[] = [];
   loading = true;
   error = '';
@@ -27,5 +32,11 @@ export class MoviesListComponent {
       this.error = 'Failed to load movies';
       this.loading = false;
     }
+  }
+  goToMovieDetails(movieId: number) {
+    this.router.navigate(['/movie', movieId]);
+  }
+  getImageUrl(path: string | null): string {
+    return this.movieService.getImageUrl(path);
   }
 }

@@ -1,0 +1,42 @@
+<div class="container">
+
+  @if (loading) {
+    <p class="loading">Loading movie details...</p>
+  }
+  
+  @else if (error) {
+    <p class="error">{{ error }}</p>
+    <button class="back-btn" (click)="goBack()">← Back to Movies</button>
+  }
+  
+  @else if (movie) {
+    <div class="movie-details">
+      <button class="back-btn" (click)="goBack()">← Back to Movies</button>
+      
+      <div class="hero" [style.background-image]="'url(' + getBackdropUrl(movie.backdrop_path) + ')'">
+        <div class="hero-content">
+          <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" class="poster">
+          <div class="info">
+            <h1>{{ movie.title }}</h1>
+            <p class="tagline">{{ movie.tagline }}</p>
+            <div class="meta">
+              <span class="rating"> {{ movie.vote_average }}/10</span>
+              <span class="runtime"> {{ movie.runtime }} min</span>
+              <span class="release"> {{ movie.release_date | date }}</span>
+            </div>
+            <div class="genres">
+              @for (genre of movie.genres; track genre.id) {
+                <span class="genre">{{ genre.name }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overview">
+        <h2>Overview</h2>
+        <p>{{ movie.overview }}</p>
+      </div>
+    </div>
+  }
+</div>

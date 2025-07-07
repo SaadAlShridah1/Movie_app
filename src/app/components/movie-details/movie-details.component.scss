@@ -1,0 +1,161 @@
+.container {
+  min-height: 100vh;
+  background: #0f0f23;
+  color: white;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+.back-btn {
+  background: #e94560;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: #d63447;
+  }
+}
+
+.hero {
+  height: 70vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: end;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(transparent, rgba(15, 15, 35, 0.9));
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.poster {
+  width: 300px;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.info {
+  flex: 1;
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+  }
+  
+  .tagline {
+    font-size: 1.2rem;
+    color: #a8a8b3;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+}
+
+.meta {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  
+  span {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+  }
+}
+
+.genres {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.genre {
+  background: #e94560;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.overview {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #e94560;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #a8a8b3;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .poster {
+    width: 250px;
+    height: 375px;
+    margin: 0 auto;
+  }
+  
+  .info h1 {
+    font-size: 2rem;
+  }
+  
+  .meta {
+    justify-content: center;
+  }
+  
+  .overview {
+    padding: 20px;
+  }
+}
