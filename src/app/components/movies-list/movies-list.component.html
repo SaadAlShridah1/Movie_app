@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Popular Movies</h1>
+  <h1>Now Playing Movies</h1>
   
   @if (loading) {
     <div class="loading">
@@ -16,7 +16,7 @@
   @else {
     <div class="movies-grid">
       @for (movie of movies; track movie.id) {
-        <div class="movie-card">
+        <div class="movie-card" (click)="goToMovieDetails(movie.id)">
           <img 
             [src]="movieService.getImageUrl(movie.poster_path)"
             [alt]="movie.title"
