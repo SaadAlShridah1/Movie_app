@@ -37,4 +37,15 @@ export class MovieService {
   getBackdropUrl(path: string | null): string {
     return this.getImageUrl(path, 'w1280');
   }
+  async getMovieRecommendations(movieId: number): Promise<Movie[]> {
+    const url = `${this.baseUrl}/movie/${movieId}/recommendations?api_key=${this.apiKey}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch movie recommendations');
+    }
+    
+    const data: MovieResponse = await response.json();
+    return data.results;
+  }
 }
