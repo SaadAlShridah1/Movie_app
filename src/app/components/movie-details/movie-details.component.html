@@ -37,6 +37,22 @@
         <h2>Overview</h2>
         <p>{{ movie.overview }}</p>
       </div>
+      @if (recommendations && recommendations.length > 0) {
+        <div class="recommendations">
+          <h2>Recommendations</h2>
+          <div class="recommendation-grid">
+            @for (rec of recommendations; track rec.id) {
+              <div class="recommendation-item" (click)="goToMovieDetails(rec.id)">
+                <img [src]="getImageUrl(rec.poster_path)" [alt]="rec.title" class="rec-poster">
+                <div class="rec-info">
+                  <h3>{{ rec.title }}</h3>
+                  <p class="rec-rating"> {{ rec.vote_average }}/10</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
   }
 </div>
