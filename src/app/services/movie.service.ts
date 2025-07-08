@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Movie, MovieDetails, MovieResponse } from '../interfaces/movie.interface';
+import {Movie, MovieDetails, MovieResponse, Recommendation, Review, ReviewsResponse  } from '../interfaces/movie.interface';
 
 @Injectable({ providedIn: 'root' })
 export class MovieService {
@@ -39,13 +39,29 @@ export class MovieService {
   }
   async getMovieRecommendations(movieId: number): Promise<Movie[]> {
     const url = `${this.baseUrl}/movie/${movieId}/recommendations?api_key=${this.apiKey}`;
+    console.log('Recommendations URL:', url);
     const response = await fetch(url);
     
     if (!response.ok) {
+          console.error('Recommendations API error:', response.status, response.statusText);
       throw new Error('Failed to fetch movie recommendations');
     }
     
-    const data: MovieResponse = await response.json();
+    const data: Recommendation = await response.json();
+    console.log('Recommendations data:', data);
+    return data.results;
+  }
+  async getMovieReviews(movieId: number): Promise<Review[]> {
+    const url = `${this.baseUrl}/movie/${movieId}/reviews?api_key=${this.apiKey}`;
+      console.log('Reviews URL:', url);
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+          console.error('Reviews API error:', response.status, response.statusText);
+      throw new Error('Failed to fetch movie reviews');
+    }
+    
+    const data: ReviewsResponse = await response.json();
     return data.results;
   }
 }
