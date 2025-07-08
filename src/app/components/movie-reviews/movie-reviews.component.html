@@ -1,0 +1,29 @@
+@if (loading) {
+  <p>Loading reviews...</p>
+}
+@else if (error) {
+  <p class="error">{{ error }}</p>
+}
+@else if (reviews && reviews.length > 0) {
+  <div class="reviews">
+    <h2>Reviews ({{ reviews.length }})</h2>
+    <div class="reviews-list">
+      @for (review of reviews; track review.id) {
+        <div class="review-card">
+          <div class="review-header">
+            <h4 class="review-author">{{ review.author }}</h4>
+            <span class="review-date">{{ review.created_at | date }}</span>
+          </div>
+          <div class="review-content">
+            <p>{{ truncateReview(review.content) }}</p>
+          </div>
+          @if (review.url) {
+            <a [href]="review.url" target="_blank" class="review-link">
+              Read Full Review 
+            </a>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
