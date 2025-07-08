@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { MovieDetails, Movie } from '../../interfaces/movie.interface';
+import { MovieRecommendationsComponent } from '../movie-recommendations/movie-recommendations.component';
+
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MovieRecommendationsComponent],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
@@ -18,6 +20,7 @@ private router = inject(Router);
 
 movie: MovieDetails | null = null;
 recommendations:Movie[] = [];
+movieId: number = 0;
 loading = true;
 error = ''
 
@@ -26,14 +29,9 @@ constructor() {
 }
 async loadMovieDetails() {
   try {
-    const movieId = Number(this.route.snapshot.paramMap.get('id'))
-    console.log('Loading movie details for ID:', movieId);
-    this.movie = await this.movieService.getMovieDetails(movieId);
-    console.log('Movie data loaded:', this.movie);
-    this.recommendations = await this.movieService.getMovieRecommendations(movieId);
-    console.log('Recommendations loaded:', this.recommendations);
-
-    this.movie = await this.movieService.getMovieDetails(movieId);
+    this.movieId = Number(this.route.snapshot.paramMap.get('id'))
+    console.log('Loading movie details for ID:', this.movieId);
+    this.movie = await this.movieService.getMovieDetails(this.movieId);
     console.log('Movie data loaded:', this.movie);
       this.loading = false;
   }
@@ -46,6 +44,12 @@ async loadMovieDetails() {
 goBack() {
   this.router.navigate(['/']);
 }
+ onRecommendationSelected(movieId: number) {
+    this.router.navigate(['/movie', movieId]);
+    this.movie = null;
+    this.loading = true;
+    this.loadMovieDetails();
+  }
 
 goToMovieDetails(movieId: number) {
   this.router.navigate(['/movie', movieId]);
