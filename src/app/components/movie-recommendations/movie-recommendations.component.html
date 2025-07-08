@@ -1,0 +1,32 @@
+@if (loading) {
+  <div class="recommendations">
+    <h2>Recommended Movies</h2>
+    <p>Loading recommendations...</p>
+  </div>
+}
+@else if (error) {
+  <div class="recommendations">
+    <h2>Recommended Movies</h2>
+    <p class="error">{{ error }}</p>
+  </div>
+}
+@else if (recommendations && recommendations.length > 0) {
+  <div class="recommendations">
+    <h2>Recommended Movies</h2>
+    <div class="recommendations-grid">
+      @for (rec of recommendations; track rec.id) {
+        <div class="recommendation-card" (click)="onMovieClick(rec.id)">
+          <img 
+            [src]="getImageUrl(rec.poster_path)" 
+            [alt]="rec.title"
+            class="rec-poster"
+          >
+          <div class="rec-info">
+            <h4>{{ rec.title }}</h4>
+            <p class="rec-rating">⭐ {{ rec.vote_average }}/10</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
