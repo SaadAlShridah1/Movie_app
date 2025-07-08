@@ -32,3 +32,19 @@ export interface Recommendation {
   total_pages: number;
   total_results: number;
 }
+
+export interface Review {
+  id: string;
+  author: string;
+  content: string;
+  created_at: string;
+  rating?: number;
+  url: string;
+}
+
+export interface ReviewsResponse {
+  page: number;
+  results: Review[];
+  total_pages: number;
+  total_results: number;
+}
