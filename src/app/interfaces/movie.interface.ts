@@ -48,3 +48,12 @@ export interface ReviewsResponse {
   total_pages: number;
   total_results: number;
 }
+
+export interface WishlistItem {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+  release_date: string;
+  addedAt: Date;
+}
