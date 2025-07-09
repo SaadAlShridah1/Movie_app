@@ -1,0 +1,109 @@
+<div class="search-container">
+  <div class="search-header">
+    <h1>Search Movies</h1>
+    
+    <div class="search-input-container">
+      <input 
+        type="text" 
+        class="search-input"
+        placeholder="Search for movies..."
+        [value]="searchQuery()"
+        (input)="onSearchInputChange($event)"
+        (keyup.enter)="searchMovies()"
+      >
+      <button class="search-btn" (click)="searchMovies()">
+        🔍 Search
+      </button>
+      @if (searchQuery()) {
+        <button class="clear-btn" (click)="clearSearch()">
+          ✕ Clear
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <p>Searching movies...</p>
+    </div>
+  }
+
+  @else if (error()) {
+    <div class="error">
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  @else if (hasSearched() && searchResults().length === 0 && !loading()) {
+    <div class="no-results">
+      <h2>No movies found for "{{ searchQuery() }}"</h2>
+      <p>Try searching with different keywords</p>
+    </div>
+  }
+
+  @else if (searchResults().length > 0) {
+    <div class="search-results">
+      <h2>Found {{ searchResults().length }} results for "{{ searchQuery() }}"</h2>
+      
+      <div class="movies-grid">
+        @for (movie of searchResults(); track movie.id) {
+          <div class="movie-card" (click)="goToMovieDetails(movie.id)">
+            <button 
+              class="wishlist-btn"
+              (click)="toggleWishlist($event, movie)"
+              [class.active]="isInWishlist(movie.id)"
+              aria-label="Toggle wishlist">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
+                      stroke="currentColor" 
+                      stroke-width="2" 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <img 
+              [src]="getImageUrl(movie.poster_path)"
+              [alt]="movie.title"
+              class="movie-poster"
+            >
+            <div class="movie-info">
+              <h3>{{ movie.title }}</h3>
+              <p class="rating">⭐ {{ movie.vote_average }}/10</p>
+              <p class="overview">{{ movie.overview | slice:0:100 }}...</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button 
+            class="pagination-btn"
+            (click)="previousPage()"
+            [disabled]="!canGoPrevious()">
+            ← Previous
+          </button>
+          
+          <div class="pagination-info">
+            <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+          </div>
+          
+          <button 
+            class="pagination-btn"
+            (click)="nextPage()"
+            [disabled]="!canGoNext()">
+            Next →
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @else {
+    <div class="search-placeholder">
+      <div class="placeholder-icon">🎬</div>
+      <h2>Discover Movies</h2>
+      <p>Search for your favorite movies by title, genre, or keywords</p>
+    </div>
+  }
+</div>
