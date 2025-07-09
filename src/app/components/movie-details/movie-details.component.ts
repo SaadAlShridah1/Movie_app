@@ -2,19 +2,22 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
+import { WishlistService } from '../../services/wishlist.service';
 import { MovieDetails, Movie } from '../../interfaces/movie.interface';
 import { MovieRecommendationsComponent } from '../movie-recommendations/movie-recommendations.component';
+import { MovieReviewsComponent } from "../movie-reviews/movie-reviews.component";
 
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, MovieRecommendationsComponent],
+  imports: [CommonModule, MovieRecommendationsComponent, MovieReviewsComponent],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
 export class MovieDetailsComponent {
 private movieService = inject(MovieService);
+private wishlistService = inject(WishlistService);
 private route = inject(ActivatedRoute);
 private router = inject(Router);
 
@@ -58,6 +61,13 @@ goToMovieDetails(movieId: number) {
   this.loading = true;
   this.loadMovieDetails();
 }
+toggleWishlist(movie: MovieDetails) {
+    this.wishlistService.toggleWishlist(movie);
+  }
+
+  isInWishlist(movieId: number): boolean {
+    return this.wishlistService.isInWishlist()(movieId);
+  }
 
 getImageUrl(path: string): string {
   return this.movieService.getImageUrl(path);

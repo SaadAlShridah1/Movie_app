@@ -36,7 +36,8 @@
       <div class="overview">
         <h2>Overview</h2>
         <p>{{ movie.overview }}</p>
-      </div>
+      </div>      
+      <app-movie-reviews [movieId]="movieId"></app-movie-reviews>
       
   <app-movie-recommendations 
         [movieId]="movieId" 
@@ -45,4 +46,3 @@
     </div>
   }
 </div>
-
