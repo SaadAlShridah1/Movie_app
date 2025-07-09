@@ -8,16 +8,25 @@ export class MovieService {
   private apiKey = '5d5adcf0c34d191699b009292dd97ef3'; 
   private baseUrl = 'https://api.themoviedb.org/3';
 
-  async getMovies(): Promise<Movie[]> {
-  const url = `${this.baseUrl}/movie/now_playing?api_key=${this.apiKey}`;
+  async getMovies(page: number = 1): Promise<MovieResponse> {
+    const url = `${this.baseUrl}/movie/now_playing?api_key=${this.apiKey}&page=${page}`;
     const response = await fetch(url);
     
     if (!response.ok) {
       throw new Error('Failed to fetch movies');
     }
     
-    const data: MovieResponse = await response.json();
-    return data.results;
+    return await response.json();
+  }
+  async searchMovies(query: string, page: number = 1): Promise<MovieResponse> {
+    const url = `${this.baseUrl}/search/movie?api_key=${this.apiKey}&query=${encodeURIComponent(query)}&page=${page}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('Failed to search movies');
+    }
+    
+    return await response.json();
   }
     async getMovieDetails(movieId: number): Promise<MovieDetails> {
       const url = `${this.baseUrl}/movie/${movieId}?api_key=${this.apiKey}`;
