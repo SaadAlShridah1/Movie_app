@@ -1,0 +1,14 @@
+<div class="language-selector">
+  <select 
+    class="language-dropdown"
+    [value]="languageService.getCurrentLanguage().code"
+    (change)="onLanguageChange($event)"
+    aria-label="Select Language">
+    @for (language of languageService.getAvailableLanguages(); track language.code) {
+      <option [value]="language.code">
+        {{ language.name }}
+      </option>
+    }
+  </select>
+  <div class="dropdown-icon">🌐</div>
+</div>
