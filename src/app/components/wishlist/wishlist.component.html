@@ -1,0 +1,49 @@
+<div class="wishlist-container">
+  <div class="wishlist-header">
+    <button class="back-btn" (click)="goBack()">← Back to Movies</button>
+    <h1>My Wishlist</h1>
+    @if (wishlistCount > 0) {
+      <button class="clear-btn" (click)="clearAllWishlist()">
+        Clear All ({{ wishlistCount }})
+      </button>
+    }
+  </div>
+
+  @if (wishlistCount === 0) {
+    <div class="empty-wishlist">
+      <div class="empty-icon">💔</div>
+      <h2>Your wishlist is empty</h2>
+      <p>Start adding movies to your wishlist by clicking the heart icon!</p>
+      <button class="browse-btn" (click)="goBack()">
+        Browse Movies
+      </button>
+    </div>
+  }
+
+  @else {
+    <div class="wishlist-grid">
+      @for (item of wishlistItems; track item.id) {
+        <div class="wishlist-card">
+          <button 
+            class="remove-btn" 
+            (click)="removeFromWishlist(item.id)"
+            aria-label="Remove from wishlist">
+            ✕
+          </button>
+
+          <img 
+            [src]="getImageUrl(item.poster_path)" 
+            [alt]="item.title"
+            class="wishlist-poster"
+            (click)="goToMovieDetails(item.id)">
+
+          <div class="wishlist-info">
+            <h3 (click)="goToMovieDetails(item.id)">{{ item.title }}</h3>
+            <p class="rating">⭐ {{ item.vote_average }}/10</p>
+            <p class="added-date">Added: {{ item.addedAt | date:'short' }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
