@@ -1,48 +1,92 @@
 <div class="container">
 
-  @if (loading) {
+  @if (loading()) {
     <p class="loading">Loading movie details...</p>
   }
   
-  @else if (error) {
-    <p class="error">{{ error }}</p>
+  @else if (error()) {
+    <p class="error">{{ error() }}</p>
     <button class="back-btn" (click)="goBack()">← Back to Movies</button>
   }
   
-  @else if (movie) {
+  @else if (movie()) {
     <div class="movie-details">
-      <button class="back-btn" (click)="goBack()">← Back to Movies</button>
-      
-      <div class="hero" [style.background-image]="'url(' + getBackdropUrl(movie.backdrop_path) + ')'">
-        <div class="hero-content">
-          <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" class="poster">
-          <div class="info">
-            <h1>{{ movie.title }}</h1>
-            <p class="tagline">{{ movie.tagline }}</p>
-            <div class="meta">
-              <span class="rating"> {{ movie.vote_average }}/10</span>
-              <span class="runtime"> {{ movie.runtime }} min</span>
-              <span class="release"> {{ movie.release_date | date }}</span>
-            </div>
-            <div class="genres">
-              @for (genre of movie.genres; track genre.id) {
-                <span class="genre">{{ genre.name }}</span>
+      <div class="hero">
+        <img [src]="getImageUrl(movie()!.poster_path)" [alt]="movie()!.title" class="poster">
+        
+        <div class="movie-content">
+          <div class="movie-header">
+            <h1 class="movie-title">{{ movie()!.title }}</h1>
+            <p class="movie-date">{{ movie()!.release_date | date:'MMM dd, yyyy' }}</p>
+          </div>
+          
+          <div class="rating-section">
+            <div class="star-rating">
+              @for (star of getStars(movie()!.vote_average); track $index) {
+                <svg class="star" [class.empty]="!star.filled" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
               }
             </div>
+            <span class="rating-number">{{ (movie()!.vote_average * 1000) | number:'1.0-0' }}</span>
+          </div>
+          
+          <p class="movie-description">{{ movie()!.overview }}</p>
+          
+          <div class="genres">
+            @for (genre of movie()!.genres; track genre.id) {
+              <span class="genre">{{ genre.name }}</span>
+            }
+          </div>
+          
+          <div class="movie-info-row">
+            <div class="info-item">
+              <span class="label">Duration:</span>
+              <span class="value">{{ movie()!.runtime }} Min.</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Languages:</span>
+              <span class="value">English</span>
+            </div>
+          </div>
+          
+          <div class="studio-section">
+            <div class="studio-logo">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Marvel_Logo.svg/320px-Marvel_Logo.svg.png" alt="Marvel Studios" />
+            </div>
+            
+            <a href="#" class="website-link">
+              Website 🔗
+            </a>
           </div>
         </div>
+        
+        <button class="wishlist-heart" (click)="toggleWishlist(movie()!)" [class.active]="isInWishlist(movie()!.id)">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
       </div>
       
-      <div class="overview">
-        <h2>Overview</h2>
-        <p>{{ movie.overview }}</p>
-      </div>      
-      <app-movie-reviews [movieId]="movieId"></app-movie-reviews>
-      
-  <app-movie-recommendations 
-        [movieId]="movieId" 
-        (movieSelected)="onRecommendationSelected($event)">
-      </app-movie-recommendations>
+      <div class="recommendations">
+        <h2>Recommendations</h2>
+        <div class="recommendations-grid">
+          @for (rec of recommendations(); track rec.id) {
+            <div class="recommendation-card" (click)="onRecommendationSelected(rec.id)">
+              <img 
+                [src]="getImageUrl(rec.poster_path)" 
+                [alt]="rec.title"
+                class="rec-poster"
+              >
+              <div class="rating-badge">{{ (rec.vote_average * 10) | number:'1.0-0' }}</div>
+              <div class="rec-info">
+                <h4>{{ rec.title }}</h4>
+                <p class="rec-date">{{ rec.release_date | date:'MMM dd, yyyy' }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   }
 </div>

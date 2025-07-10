@@ -1,14 +1,14 @@
-@if (loading) {
+@if (loading()) {
   <p>Loading reviews...</p>
 }
-@else if (error) {
-  <p class="error">{{ error }}</p>
+@else if (error()) {
+  <p class="error">{{ error() }}</p>
 }
-@else if (reviews && reviews.length > 0) {
+@else if (reviews() && reviews().length > 0) {
   <div class="reviews">
-    <h2>Reviews ({{ reviews.length }})</h2>
+    <h2>Reviews ({{ reviews().length }})</h2>
     <div class="reviews-list">
-      @for (review of reviews; track review.id) {
+      @for (review of reviews(); track review.id) {
         <div class="review-card">
           <div class="review-header">
             <h4 class="review-author">{{ review.author }}</h4>

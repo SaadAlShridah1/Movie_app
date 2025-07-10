@@ -1,69 +1,46 @@
 <div class="container">
   <div class="wishlist-header">
-    <h1>My Wishlist</h1>
-    <button class="back-btn" (click)="goBack()">Back to Home</button>
+    <h1>Watch list</h1>
+    
+    @if (wishlistCount > 0) {
+      <div class="wishlist-tabs">
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab() === 'all'"
+          (click)="setActiveTab('all')">
+          All ({{ wishlistCount }})
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab() === 'movies'"
+          (click)="setActiveTab('movies')">
+          Movies ({{ movieCount }})
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab() === 'tv'"
+          (click)="setActiveTab('tv')">
+          TV Shows ({{ tvCount }})
+        </button>
+      </div>
+    }
   </div>
 
   @if (wishlistCount > 0) {
-    <div class="wishlist-tabs">
-      <button 
-        class="tab-btn"
-        [class.active]="activeTab() === 'all'"
-        (click)="setActiveTab('all')">
-        All ({{ wishlistCount }})
-      </button>
-      <button 
-        class="tab-btn"
-        [class.active]="activeTab() === 'movies'"
-        (click)="setActiveTab('movies')">
-        Movies ({{ movieCount }})
-      </button>
-      <button 
-        class="tab-btn"
-        [class.active]="activeTab() === 'tv'"
-        (click)="setActiveTab('tv')">
-        TV Shows ({{ tvCount }})
-      </button>
-    </div>
-
-    <div class="clear-actions">
-      @if (activeTab() === 'all') {
-        <button class="clear-btn clear-all" (click)="clearAllWishlist()">
-          Clear All
-        </button>
-      }
-      @else if (activeTab() === 'movies') {
-        <button class="clear-btn clear-movies" (click)="clearMovies()">
-          Clear Movies
-        </button>
-      }
-      @else if (activeTab() === 'tv') {
-        <button class="clear-btn clear-tv" (click)="clearTVShows()">
-          Clear TV Shows
-        </button>
-      }
-    </div>
-
     <div class="wishlist-content">
       @if (displayItems.length === 0) {
         <div class="empty-state">
-          <p>No {{ activeTab() === 'movies' ? 'movies' : activeTab() === 'tv' ? 'TV shows' : 'items' }} in your wishlist.</p>
+          <div class="empty-icon">
+            <img src="assets/heart_slash.png" alt="Empty wishlist">
+          </div>
+          <p>No {{ activeTab() === 'movies' ? 'Movies' : activeTab() === 'tv' ? 'TV Shows' : 'items' }} in watch list</p>
+          <button class="back-to-home-btn" (click)="goBack()">Back to home</button>
         </div>
       }
       @else {
         <div class="wishlist-grid">
           @for (item of displayItems; track item.id + '-' + item.type) {
             <div class="wishlist-card" (click)="goToDetails(item)">
-              <div class="content-type-badge" [class]="item.type">
-                {{ getContentTypeLabel(item.type!) }}
-              </div>
-              
-              <button 
-                class="remove-btn"
-                (click)="removeFromWishlist(item.id, item.type!); $event.stopPropagation()"
-                aria-label="Remove from wishlist">
-                ✕
-              </button>   
               <img 
                 [src]="getImageUrl(item.poster_path)"
                 [alt]="item.title"
@@ -71,14 +48,30 @@
               
               <div class="wishlist-info">
                 <h3>{{ item.title }}</h3>
-                <p class="rating">⭐ {{ item.vote_average }}/10</p>
+                
                 <p class="release-date">
-                  {{ item.type === 'tv' ? 'First aired:' : 'Released:' }} 
-                  {{ item.release_date | date }}
+                  {{ item.release_date | date:'MMM dd, yyyy' }}
                 </p>
-                <p class="added-date">
-                  Added: {{ item.addedAt | date:'short' }}
+                
+                <div class="rating-stars">
+                  @for (star of getStars(item.vote_average); track $index) {
+                    <svg class="star" [class.filled]="star.filled" [class.empty]="!star.filled" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  }
+                  <span class="rating-number">{{ (item.vote_average * 1000) | number:'1.0-0' }}</span>
+                </div>
+                
+                <p class="movie-description">
+                  {{ getMovieDescription(item) }}
                 </p>
+                
+                <img 
+                  class="bookmark-icon"
+                  src="/assets/heart3.png"
+                  alt="Remove from wishlist"
+                  (click)="removeFromWishlist(item.id, item.type!); $event.stopPropagation()"
+                >
               </div>
             </div>
           }
@@ -89,17 +82,11 @@
 
   @else {
     <div class="empty-wishlist">
-      <div class="empty-icon"></div>
-      <h2>Your wishlist is empty</h2>
-      <p>Start adding movies and TV shows to your favorites!</p>
-      <div class="empty-actions">
-        <button class="action-btn" (click)="navigateToMovies()">
-          Browse Movies
-        </button>
-        <button class="action-btn" (click)="navigateToTVShows()">
-          Browse TV Shows
-        </button>
+      <div class="empty-icon">
+        <img src="assets/heart_slash.png" alt="Empty wishlist">
       </div>
+      <h2>No Movies in watch list</h2>
+      <button class="back-to-home-btn" (click)="goBack()">Back to home</button>
     </div>
   }
 </div>

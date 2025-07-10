@@ -1,7 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { Movie } from '../../interfaces/movie.interface';
@@ -13,10 +13,11 @@ import { Movie } from '../../interfaces/movie.interface';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
   movieService = inject(MovieService);
   wishlistService = inject(WishlistService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   searchQuery = signal('');
   searchResults = signal<Movie[]>([]);
@@ -29,7 +30,17 @@ export class SearchComponent {
   canGoPrevious = computed(() => this.currentPage() > 1);
   canGoNext = computed(() => this.currentPage() < this.totalPages());
 
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['q']) {
+        this.searchQuery.set(params['q']);
+        this.searchMovies();
+      }
+    });
+  }
+
   async searchMovies() {
+    console.log('SEARCH BUTTON CLICKED!');
     const query = this.searchQuery().trim();
     if (!query) return;
 
@@ -68,6 +79,27 @@ export class SearchComponent {
     if (this.canGoPrevious()) {
       await this.goToPage(this.currentPage() - 1);
     }
+  }
+
+  getVisiblePages(): number[] {
+    const current = this.currentPage();
+    const total = this.totalPages();
+    const pages: number[] = [];
+    
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        pages.push(i);
+      }
+    } else {
+      const start = Math.max(1, Math.min(current - 2, total - 4));
+      const end = Math.min(total, start + 4);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
   }
 
   onSearchInputChange(event: Event) {

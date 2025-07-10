@@ -13,12 +13,14 @@
       </a>
       
       <button class="wishlist-nav-btn" (click)="navigateToWishlist()">
-        <span class="wishlist-icon">❤️</span>
-        <span class="wishlist-text">Wishlist</span>
-        @if (wishlistCount > 0) {
-          <span class="wishlist-counter">{{ wishlistCount }}</span>
-        }
-      </button>
+  <span class="wishlist-icon">
+    <img src="/assets/heart.png" alt="wishlist">
+  </span>
+  <span class="wishlist-text">Wishlist</span>
+  @if (wishlistCount > 0) {
+    <span class="wishlist-counter">{{ wishlistCount }}</span>
+  }
+</button>
          <app-language-selector></app-language-selector>
     </div>
   </div>

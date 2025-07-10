@@ -1,34 +1,68 @@
 <div class="container">
   <h1>Now Playing Movies</h1>
   
-  @if (loading) {
+  @if (loading()) {
     <div class="loading">
       <p>Loading movies...</p>
     </div>
   } 
   
-  @else if (error) {
+  @else if (error()) {
     <div class="error">
-      <p>{{ error }}</p>
+      <p>{{ error() }}</p>
     </div>
   } 
   
   @else {
     <div class="movies-grid">
-      @for (movie of movies; track movie.id) {
+      @for (movie of movies(); track movie.id) {
         <div class="movie-card" (click)="goToMovieDetails(movie.id)">
           <img 
-            [src]="movieService.getImageUrl(movie.poster_path)"
+            [src]="getImageUrl(movie.poster_path)"
             [alt]="movie.title"
             class="movie-poster"
           >
+          
+          <div 
+            class="rating-circle"
+            [class.good]="movie.vote_average >= 7"
+            [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+            [class.poor]="movie.vote_average < 5">
+            {{ (movie.vote_average * 10) | number:'1.0-0' }}%
+          </div>
+          
           <div class="movie-info">
             <h3>{{ movie.title }}</h3>
-            <p class="rating">* {{ movie.vote_average }}/10</p>
-            <p class="overview">{{ movie.overview | slice:0:100 }}...</p>
+            <div class="movie-meta">
+              <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
+              <svg 
+                class="heart-icon"
+                [class.active]="isInWishlist(movie.id)"
+                (click)="toggleWishlist($event, movie)"
+                fill="currentColor" 
+                viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
           </div>
         </div>
       }
+    </div>
+    
+    <div class="pagination">
+      <button class="pagination-btn" 
+              (click)="previousPage()"
+              [disabled]="!canGoPrevious()">
+        Previous
+      </button>
+      <div class="pagination-info">
+        <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+      </div>
+      <button class="pagination-btn"
+              (click)="nextPage()"
+              [disabled]="!canGoNext()">
+        Next
+      </button>
     </div>
   }
 </div>

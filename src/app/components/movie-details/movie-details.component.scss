@@ -1,7 +1,9 @@
 .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
   min-height: 100vh;
-  background: #0f0f23;
-  color: white;
 }
 
 .loading, .error {
@@ -15,146 +17,425 @@
 }
 
 .back-btn {
-  background: #e94560;
+  background: #007bff;
   color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
-  margin: 20px;
+  margin-bottom: 20px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
   transition: background 0.3s ease;
   
   &:hover {
-    background: #d63447;
+    background: #0056b3;
   }
+}
+
+.movie-details {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .hero {
-  height: 70vh;
-  background-size: cover;
-  background-position: center;
-  position: relative;
   display: flex;
-  align-items: end;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(transparent, rgba(15, 15, 35, 0.9));
-  }
-}
-
-.hero-content {
+  gap: 40px;
+  margin-bottom: 60px;
   position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 30px;
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+  height: 650px; // Added height to accommodate absolute positioning
+  border-bottom: 3px solid #333;
+  padding-bottom: 40px;
 }
 
 .poster {
-  width: 300px;
-  height: 450px;
+  width: 350px;
+  height: 525px;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
 }
 
-.info {
+.movie-content {
   flex: 1;
-  
-  h1 {
-    font-size: 3rem;
-    margin: 0 0 10px 0;
-    font-weight: bold;
-  }
-  
-  .tagline {
-    font-size: 1.2rem;
-    color: #a8a8b3;
-    margin-bottom: 20px;
-    font-style: italic;
-  }
+  padding-left: 20px;
 }
 
-.meta {
+.movie-header {
+  margin-bottom: 15px;
+}
+
+.movie-title {
+  width: 485px;
+  height: 78px;
+  font-family: Inter;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #333;
+  margin: 0 0 8px 0;
+  opacity: 1;
+}
+
+.movie-date {
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.rating-section {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  
-  span {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    backdrop-filter: blur(10px);
-  }
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+  color: #333;
+  fill: #333;
+}
+
+.star.empty {
+  color: #ddd;
+  fill: #ddd;
+}
+
+.rating-number {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-left: 8px;
+  font-family: Inter;
+}
+
+.movie-description {
+  width: 838px;
+  height: 145px;
+  position: absolute;
+  top: 308px;
+  left: 497px;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #555;
+  margin-bottom: 25px;
+  opacity: 1;
 }
 
 .genres {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+  position: absolute;
+  top: 484px;
+  left: 497px;
+  margin-bottom: 25px;
 }
 
 .genre {
-  background: #e94560;
-  padding: 6px 16px;
-  border-radius: 20px;
+  width: 112px;
+  height: 37px;
+  background: #FFE353;
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 500;
+  font-family: Inter;
+  border: none;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.overview {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px;
+.movie-info-row {
+  position: absolute;
+  top: 556px;
+  left: 503px;
+  display: flex;
+  gap: 150px;
+  margin-bottom: 25px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  
+  &:first-child {
+    width: 73px;
+    height: 19px;
+    opacity: 1;
+  }
+  
+  &:last-child {
+    width: 92px;
+    height: 19px;
+    opacity: 1;
+  }
+  
+  .label {
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-family: Inter;
+  }
+  
+  .value {
+    color: #666;
+    font-size: 14px;
+    font-family: Inter;
+    font-weight: 400;
+  }
+}
+
+.studio-section {
+  margin: 25px 0;
+}
+
+.studio-logo {
+  img {
+    height: 35px;
+    width: auto;
+  }
+}
+
+.website-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  font-family: Inter;
+  font-weight: 400;
+  transition: background 0.2s ease;
+  margin-top: 15px;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+}
+
+.wishlist-heart {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  svg {
+    width: 24px;
+    height: 24px;
+    color: #FFE353;
+    fill: #FFE353;
+  }
+  
+  &.active svg {
+    color: #ff4757;
+    fill: #ff4757;
+  }
+}
+
+.recommendations {
+  margin-top: 0;
+  background: white;
+  padding: 40px 0;
   
   h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #e94560;
-  }
-  
-  p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: #a8a8b3;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    font-family: Inter;
   }
 }
 
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+.recommendation-card {
+  position: relative;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  background: transparent;
+  box-shadow: none;
+  
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.rec-poster {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.rating-badge {
+  position: absolute;
+  bottom: 70px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  font-weight: 700;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  font-family: Inter;
+}
+
+.rec-info {
+  padding: 12px 0;
+  background: transparent;
+  
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    font-family: Inter;
+  }
+  
+  .rec-date {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    font-family: Inter;
+    font-weight: 400;
+  }
+}
+
+// Responsive design
 @media (max-width: 768px) {
-  .hero-content {
+  .container {
+    padding: 10px;
+  }
+  
+  .movie-details {
+    padding: 0;
+  }
+  
+  .hero {
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 20px;
+    height: auto;
+    border-bottom: none;
+    padding-bottom: 20px;
   }
   
   .poster {
-    width: 250px;
-    height: 375px;
-    margin: 0 auto;
+    width: 280px;
+    height: 420px;
+    margin-bottom: 20px;
   }
   
-  .info h1 {
-    font-size: 2rem;
+  .movie-content {
+    padding-left: 0;
   }
   
-  .meta {
+  .movie-title {
+    width: 100%;
+    height: auto;
+    font-size: 28px;
+  }
+  
+  .movie-description {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  
+  .genres {
+    position: relative;
+    top: auto;
+    left: auto;
     justify-content: center;
   }
   
-  .overview {
-    padding: 20px;
+  .genre {
+    width: auto;
+    height: auto;
+  }
+  
+  .movie-info-row {
+    position: relative;
+    top: auto;
+    left: auto;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .info-item {
+    &:first-child,
+    &:last-child {
+      width: 100%;
+      height: auto;
+    }
+  }
+  
+  .recommendations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .wishlist-heart {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 20px auto 0;
   }
 }

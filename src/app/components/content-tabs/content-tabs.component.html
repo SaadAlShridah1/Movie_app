@@ -1,151 +1,114 @@
 <div class="container">
   <div class="tabs-header">
-    <h1>Discover Content</h1>
-    <div class="tab-buttons">
+    <h1>Welcome to our movie app</h1>
+    <p>Millions of movies, TV shows and people to discover. Explore now.</p>
+    
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Search and explore..."
+        class="search-input"
+        #searchInput
+        (keyup.enter)="navigateToSearch(searchInput.value)"
+      >
       <button 
-        class="tab-btn"
-        [class.active]="activeTab() === 'movies'"
-        (click)="setActiveTab('movies')">
-        Movies
-      </button>
-      <button 
-        class="tab-btn"
-        [class.active]="activeTab() === 'tv'"
-        (click)="setActiveTab('tv')">
-         TV Shows
+        type="button"
+        class="search-btn"
+        (click)="navigateToSearch(searchInput.value)">
+        Search
       </button>
     </div>
   </div>
 
-  @if (activeTab() === 'movies') {
-    <div class="tab-content">
-      <h2>Now Playing Movies</h2>
-      
-      @if (moviesLoading()) {
-        <div class="loading">
-          <p>Loading movies...</p>
-        </div>
-      } 
-      
-      @else if (moviesError()) {
-        <div class="error">
-          <p>{{ moviesError() }}</p>
-        </div>
-      } 
-      
-      @else {
-        <div class="content-grid">
-          @for (movie of movies(); track movie.id) {
-            <div class="content-card" (click)="goToMovieDetails(movie.id)">
-              <button 
-                class="wishlist-btn"
-                (click)="toggleMovieWishlist($event, movie)"
-                [class.active]="isInWishlist(movie.id)"
-                aria-label="Toggle wishlist">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
-                        stroke="currentColor" 
-                        stroke-width="2" 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <img 
-                [src]="getImageUrl(movie.poster_path)"
-                [alt]="movie.title"
-                class="content-poster"
-              >
-              <div class="content-info">
-                <h3>{{ movie.title }}</h3>
-                <p class="rating">⭐ {{ movie.vote_average }}/10</p>
-                <p class="overview">{{ movie.overview | slice:0:100 }}...</p>
+  <div class="tab-content">
+    <h2>Now Playing</h2>
+    
+    @if (moviesLoading()) {
+      <div class="loading">
+        <p>Loading movies...</p>
+      </div>
+    } 
+    
+    @else if (moviesError()) {
+      <div class="error">
+        <p>{{ moviesError() }}</p>
+      </div>
+    } 
+    
+    @else {
+      <div class="content-grid">
+        @for (movie of movies(); track movie.id) {
+          <div class="content-card" (click)="goToMovieDetails(movie.id)">
+            <img 
+              [src]="getImageUrl(movie.poster_path)"
+              [alt]="movie.title"
+              class="content-poster"
+            >
+            
+            <div 
+              class="rating-circle"
+              [class.good]="movie.vote_average >= 7"
+              [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+              [class.poor]="movie.vote_average < 5">
+              {{ (movie.vote_average * 10) | number:'1.0-0' }}
+            </div>
+            
+            <div class="content-info">
+              <h3>{{ movie.title }}</h3>
+              <div class="movie-meta">
+                <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
+                <img 
+                  [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                  [alt]="isInWishlist(movie.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                  class="heart-icon"
+                  (click)="toggleMovieWishlist($event, movie)"
+                >
               </div>
             </div>
+          </div>
+        }
+      </div>
+      
+      <div class="pagination">
+        <button 
+          class="pagination-btn" 
+          (click)="previousMoviesPage()"
+          [disabled]="!canGoPreviousMovies()">
+          &#8249;
+        </button>
+        
+        <div class="page-numbers">
+          @if (moviesPage() > 3) {
+            <button class="page-btn" (click)="goToMoviesPage(1)">1</button>
+            @if (moviesPage() > 4) {
+              <span class="dots">...</span>
+            }
+          }
+          
+          @for (page of getVisiblePages(); track page) {
+            <button 
+              class="page-btn"
+              [class.active]="page === moviesPage()"
+              (click)="goToMoviesPage(page)">
+              {{ page }}
+            </button>
+          }
+          
+          @if (moviesPage() < moviesTotalPages() - 2) {
+            @if (moviesPage() < moviesTotalPages() - 3) {
+              <span class="dots">...</span>
+            }
+            <button class="page-btn" (click)="goToMoviesPage(moviesTotalPages())">{{ moviesTotalPages() }}</button>
           }
         </div>
         
-        <div class="pagination">
-          <button class="pagination-btn" 
-                  (click)="previousMoviesPage()"
-                  [disabled]="!canGoPreviousMovies()">
-            ← Previous
-          </button>
-          <div class="pagination-info">
-            <span>Page {{ moviesPage() }} of {{ moviesTotalPages() }}</span>
-          </div>
-          <button class="pagination-btn"
-                  (click)="nextMoviesPage()"
-                  [disabled]="!canGoNextMovies()">
-            Next →
-          </button>
-        </div>
-      }
-    </div>
-  }
-
-  @if (activeTab() === 'tv') {
-    <div class="tab-content">
-      <h2>Popular TV Shows</h2>
-      
-      @if (tvLoading()) {
-        <div class="loading">
-          <p>Loading TV shows...</p>
-        </div>
-      } 
-      
-      @else if (tvError()) {
-        <div class="error">
-          <p>{{ tvError() }}</p>
-        </div>
-      } 
-      
-      @else {
-        <div class="content-grid">
-          @for (tvShow of tvShows(); track tvShow.id) {
-            <div class="content-card" (click)="goToTVDetails(tvShow.id)">
-              <button 
-                class="wishlist-btn"
-                (click)="toggleTVWishlist($event, tvShow)"
-                [class.active]="isInWishlist(tvShow.id)"
-                aria-label="Toggle wishlist">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
-                        stroke="currentColor" 
-                        stroke-width="2" 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <img 
-                [src]="getImageUrl(tvShow.poster_path)"
-                [alt]="tvShow.name"
-                class="content-poster"
-              >
-              <div class="content-info">
-                <h3>{{ tvShow.name }}</h3>
-                <p class="rating"> {{ tvShow.vote_average }}/10</p>
-                <p class="overview">{{ tvShow.overview | slice:0:100 }}...</p>
-              </div>
-            </div>
-          }
-        </div>
-        
-        <div class="pagination">
-          <button class="pagination-btn" 
-                  (click)="previousTVPage()"
-                  [disabled]="!canGoPreviousTV()">
-            ← Previous
-          </button>
-          <div class="pagination-info">
-            <span>Page {{ tvPage() }} of {{ tvTotalPages() }}</span>
-          </div>
-          <button class="pagination-btn"
-                  (click)="nextTVPage()"
-                  [disabled]="!canGoNextTV()">
-            Next 
-          </button>
-        </div>
-      }
-    </div>
-  }
+        <button 
+          class="pagination-btn"
+          (click)="nextMoviesPage()"
+          [disabled]="!canGoNextMovies()">
+          &#8250;
+        </button>
+      </div>
+    }
+  </div>
 </div>

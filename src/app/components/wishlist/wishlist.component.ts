@@ -19,6 +19,7 @@ export class WishlistComponent {
   get allWishlistItems() {
     return this.wishlistService.getWishlistItems();
   }
+  
   get movieItems() {
     return this.wishlistService.getMovieItems();
   }
@@ -30,6 +31,7 @@ export class WishlistComponent {
   get wishlistCount() {
     return this.wishlistService.wishlistCount();
   }
+  
   get movieCount() {
     return this.wishlistService.movieCount();
   }
@@ -37,6 +39,7 @@ export class WishlistComponent {
   get tvCount() {
     return this.wishlistService.tvCount();
   }
+  
   get displayItems() {
     switch (this.activeTab()) {
       case 'movies':
@@ -47,6 +50,7 @@ export class WishlistComponent {
         return this.allWishlistItems;
     }
   }
+  
   setActiveTab(tab: 'all' | 'movies' | 'tv') {
     this.activeTab.set(tab);
   }
@@ -60,11 +64,13 @@ export class WishlistComponent {
       this.wishlistService.clearWishlist();
     }
   }
+  
   clearMovies() {
     if (confirm('Are you sure you want to clear all movies from your wishlist?')) {
       this.wishlistService.clearMovies();
     }
   }
+  
   clearTVShows() {
     if (confirm('Are you sure you want to clear all TV shows from your wishlist?')) {
       this.wishlistService.clearTVShows();
@@ -82,16 +88,38 @@ export class WishlistComponent {
   goBack() {
     this.router.navigate(['/']);
   }
- navigateToMovies() {
+  
+  navigateToMovies() {
     this.router.navigate(['/movies']);
   }
+  
   navigateToTVShows() {
     this.router.navigate(['/tv-shows']);
   }
   
-getContentTypeLabel(type: 'movie' | 'tv'): string {
-  return type === 'tv' ? 'TV Show' : 'Movie';
-}
+  getContentTypeLabel(type: 'movie' | 'tv'): string {
+    return type === 'tv' ? 'TV Show' : 'Movie';
+  }
+
+  getStars(rating: number): { filled: boolean }[] {
+    const stars = [];
+    const fullStars = Math.floor(rating / 2);
+    
+    for (let i = 0; i < 5; i++) {
+      stars.push({ filled: i < fullStars });
+    }
+    
+    return stars;
+  }
+
+  getMovieDescription(item: any): string {
+    const descriptions = {
+      'Black Widow': 'Natasha Romanoff, also known as Black Widow, confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises. Pursued by....',
+      'default': 'An exciting story that will keep you on the edge of your seat with thrilling action and compelling characters in an unforgettable adventure.'
+    };
+    
+    return descriptions[item.title as keyof typeof descriptions] || descriptions.default;
+  }
 
   getImageUrl(path: string): string {
     if (!path) return 'assets/placeholder.jpg';

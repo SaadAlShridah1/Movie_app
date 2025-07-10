@@ -10,13 +10,17 @@
         [value]="searchQuery()"
         (input)="onSearchInputChange($event)"
         (keyup.enter)="searchMovies()"
+        #searchInput
       >
-      <button class="search-btn" (click)="searchMovies()">
-        🔍 Search
+      <button 
+        type="button"
+        class="search-btn" 
+        (click)="searchMovies()">
+        Search
       </button>
       @if (searchQuery()) {
         <button class="clear-btn" (click)="clearSearch()">
-          ✕ Clear
+          Clear
         </button>
       }
     </div>
@@ -44,32 +48,35 @@
   @else if (searchResults().length > 0) {
     <div class="search-results">
       <h2>Found {{ searchResults().length }} results for "{{ searchQuery() }}"</h2>
-      
+
       <div class="movies-grid">
         @for (movie of searchResults(); track movie.id) {
           <div class="movie-card" (click)="goToMovieDetails(movie.id)">
-            <button 
-              class="wishlist-btn"
-              (click)="toggleWishlist($event, movie)"
-              [class.active]="isInWishlist(movie.id)"
-              aria-label="Toggle wishlist">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
-                      stroke="currentColor" 
-                      stroke-width="2" 
-                      stroke-linecap="round" 
-                      stroke-linejoin="round"/>
-              </svg>
-            </button>
             <img 
               [src]="getImageUrl(movie.poster_path)"
               [alt]="movie.title"
               class="movie-poster"
             >
+
+            <div 
+              class="rating-circle"
+              [class.good]="movie.vote_average >= 7"
+              [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+              [class.poor]="movie.vote_average < 5">
+              {{ (movie.vote_average * 10) | number:'1.0-0' }}
+            </div>
+
             <div class="movie-info">
               <h3>{{ movie.title }}</h3>
-              <p class="rating">⭐ {{ movie.vote_average }}/10</p>
-              <p class="overview">{{ movie.overview | slice:0:100 }}...</p>
+              <div class="movie-meta">
+                <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
+                <img 
+                  [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                  alt="Toggle Wishlist"
+                  class="heart-icon"
+                  (click)="toggleWishlist($event, movie)"
+                >
+              </div>
             </div>
           </div>
         }
@@ -78,21 +85,42 @@
       @if (totalPages() > 1) {
         <div class="pagination">
           <button 
-            class="pagination-btn"
+            class="pagination-btn" 
             (click)="previousPage()"
             [disabled]="!canGoPrevious()">
-            ← Previous
+            &#8249;
           </button>
           
-          <div class="pagination-info">
-            <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <div class="page-numbers">
+            @if (currentPage() > 3) {
+              <button class="page-btn" (click)="goToPage(1)">1</button>
+              @if (currentPage() > 4) {
+                <span class="dots">...</span>
+              }
+            }
+            
+            @for (page of getVisiblePages(); track page) {
+              <button 
+                class="page-btn"
+                [class.active]="page === currentPage()"
+                (click)="goToPage(page)">
+                {{ page }}
+              </button>
+            }
+            
+            @if (currentPage() < totalPages() - 2) {
+              @if (currentPage() < totalPages() - 3) {
+                <span class="dots">...</span>
+              }
+              <button class="page-btn" (click)="goToPage(totalPages())">{{ totalPages() }}</button>
+            }
           </div>
           
           <button 
             class="pagination-btn"
             (click)="nextPage()"
             [disabled]="!canGoNext()">
-            Next →
+            &#8250;
           </button>
         </div>
       }

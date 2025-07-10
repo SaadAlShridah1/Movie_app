@@ -1,59 +1,24 @@
 .language-selector {
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
 }
 
 .language-dropdown {
-  appearance: none;
-  background: #fff;
-  border: 2px solid #007bff;
-  border-radius: 6px;
-  padding: 8px 35px 8px 12px;
-  font-size: 14px;
-  color: #333;
+  width: 19px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 100%;
+  color: black;
   cursor: pointer;
-  min-width: 120px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: #0056b3;
-    background: #f8f9fa;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: #0056b3;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-  }
+  appearance: none;
+  opacity: 1;
 }
 
 .dropdown-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 16px;
-}
-
-:host-context(.rtl) .language-dropdown {
-  padding: 8px 12px 8px 35px;
-}
-
-:host-context(.rtl) .dropdown-icon {
-  right: auto;
-  left: 10px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .language-dropdown {
-    background: #2d3748;
-    color: #fff;
-    border-color: #4a5568;
-
-    &:hover {
-      background: #4a5568;
-      border-color: #007bff;
-    }
-  }
+  display: none;
 }

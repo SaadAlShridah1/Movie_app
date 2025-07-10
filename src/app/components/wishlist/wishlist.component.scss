@@ -1,46 +1,25 @@
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 40px 20px;
 }
 
 .wishlist-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  margin-bottom: 40px;
 
   h1 {
     color: #333;
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-  }
-}
-
-.back-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #0056b3;
-    transform: translateY(-2px);
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    font-family: Inter;
   }
 }
 
 .wishlist-tabs {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
 .tab-btn {
@@ -52,7 +31,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 16px;
+  font-family: Inter;
 
   &:hover {
     background: #e3f2fd;
@@ -66,258 +46,211 @@
   }
 }
 
-.clear-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2rem;
-}
-
-.clear-btn {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #c82333;
-    transform: translateY(-2px);
-  }
-}
-
 .wishlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .wishlist-card {
-  position: relative;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  }
-}
-
-.content-type-badge {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  z-index: 10;
-  backdrop-filter: blur(10px);
-
-  &.movie {
-    background: rgba(0, 123, 255, 0.9);
-    color: white;
-  }
-
-  &.tv {
-    background: rgba(40, 167, 69, 0.9);
-    color: white;
-  }
-}
-
-.remove-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: rgba(220, 53, 69, 0.9);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  min-height: 200px;
 
   &:hover {
-    background: rgba(220, 53, 69, 1);
-    transform: scale(1.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 }
 
 .wishlist-poster {
-  width: 100%;
-  height: 350px;
+  width: 140px;
+  height: 200px;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.wishlist-card:hover .wishlist-poster {
-  transform: scale(1.05);
+  flex-shrink: 0;
 }
 
 .wishlist-info {
-  padding: 1.5rem;
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 
   h3 {
     color: #333;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    font-family: Inter;
+    line-height: 1.2;
+  }
+
+  .release-date {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-family: Inter;
+  }
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+
+  .star {
+    width: 20px;
+    height: 20px;
+    color: #333;
+  }
+
+  .star.filled {
+    color: #333;
+    fill: #333;
+  }
+
+  .star.empty {
+    color: #ddd;
+    fill: none;
+    stroke: #ddd;
+  }
+
+  .rating-number {
+    margin-left: 8px;
+    font-size: 16px;
     font-weight: 600;
-    line-height: 1.3;
+    color: #333;
+    font-family: Inter;
   }
+}
 
-  .rating {
-    color: #007bff;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-  }
+.movie-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex: 1;
+  font-family: Inter;
+}
 
-  .release-date, .added-date {
-    color: #6c757d;
-    font-size: 0.85rem;
-    margin: 0 0 0.25rem 0;
-  }
+.bookmark-icon {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 24px;
+  height: 24px;
+  color: #FFE353;
+  fill: #FFE353;
+  cursor: pointer;
+}
 
-  .added-date {
-    font-style: italic;
-  }
+.content-type-badge {
+  display: none;
+}
+
+.remove-btn {
+  display: none;
+}
+
+.added-date {
+  display: none;
 }
 
 .empty-wishlist {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 120px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 
   .empty-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    width: 211.597px;
+    height: 211.621px;
+    opacity: 1;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
   }
 
   h2 {
     color: #333;
-    margin-bottom: 1rem;
-    font-size: 2rem;
-  }
-
-  p {
-    color: #6c757d;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-}
-
-.empty-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.action-btn {
-  background: linear-gradient(45deg, #007bff, #0056b3);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+    margin-bottom: 32px;
+    font-size: 24px;
+    font-family: Inter;
+    font-weight: 500;
   }
 }
 
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #6c757d;
-  font-size: 1.1rem;
-}
+  padding: 120px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 
-// RTL Support
-:host-context(.rtl) {
-  .wishlist-header {
-    flex-direction: row-reverse;
-  }
-  
-  .wishlist-tabs {
-    flex-direction: row-reverse;
-  }
-  
-  .clear-actions {
-    justify-content: flex-start;
-  }
-  
-  .content-type-badge {
-    left: auto;
-    right: 0.5rem;
-  }
-  
-  .remove-btn {
-    right: auto;
-    left: 0.5rem;
-  }
-  
-  .wishlist-info {
-    text-align: right;
-  }
-}
-
-// Responsive Design
-@media (max-width: 768px) {
-  .container {
-    padding: 0.5rem;
-  }
-  
-  .wishlist-header {
-    flex-direction: column;
-    text-align: center;
+  .empty-icon {
+    width: 211.597px;
+    height: 211.621px;
+    opacity: 1;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
-    h1 {
-      font-size: 2rem;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
-  
-  .wishlist-tabs {
-    justify-content: center;
+
+  p {
+    color: #333;
+    font-size: 24px;
+    font-family: Inter;
+    font-weight: 500;
+    margin-bottom: 32px;
   }
+}
+
+.back-to-home-btn {
+  width: 383px;
+  height: 46px;
+  background: #FFE353;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 1;
   
-  .tab-btn {
-    flex: 1;
-    min-width: 100px;
-  }
-  
-  .wishlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-  
-  .wishlist-poster {
-    height: 300px;
-  }
-  
-  .empty-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .action-btn {
-    width: 100%;
-    max-width: 250px;
+  &:hover {
+    background: #fdd835;
+    transform: translateY(-2px);
   }
 }
