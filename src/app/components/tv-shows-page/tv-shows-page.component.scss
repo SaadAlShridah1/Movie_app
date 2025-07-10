@@ -1,0 +1,223 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+
+  h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.tv-shows-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tv-show-card {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+
+  svg {
+    color: #6c757d;
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    
+    svg {
+      color: #007bff;
+    }
+  }
+
+  &.active {
+    background: rgba(220, 53, 69, 0.9);
+    
+    svg {
+      color: white;
+      fill: white;
+    }
+  }
+}
+
+.tv-show-poster {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tv-show-card:hover .tv-show-poster {
+  transform: scale(1.05);
+}
+
+.tv-show-info {
+  padding: 1.5rem;
+
+  h3 {
+    color: #333;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .rating {
+    color: #007bff;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .overview {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.pagination-info {
+  font-weight: 600;
+  color: #333;
+  padding: 0 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  
+  p {
+    font-size: 1.2rem;
+    color: #6c757d;
+  }
+}
+
+.error {
+  text-align: center;
+  padding: 3rem;
+  
+  p {
+    color: #dc3545;
+    font-size: 1.2rem;
+  }
+}
+
+// RTL Support
+:host-context(.rtl) {
+  .tv-shows-grid {
+    direction: rtl;
+  }
+  
+  .tv-show-card {
+    text-align: right;
+  }
+  
+  .wishlist-btn {
+    right: auto;
+    left: 0.5rem;
+  }
+  
+  .pagination {
+    flex-direction: row-reverse;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+    
+    h1 {
+      font-size: 2rem;
+    }
+  }
+  
+  .tv-shows-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .tv-show-poster {
+    height: 300px;
+  }
+  
+  .tv-show-info {
+    padding: 1rem;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .pagination-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}

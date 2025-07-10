@@ -1,3 +1,5 @@
+import e from "express";
+
 export interface Movie {
   id: number;  
   title: string;
@@ -56,4 +58,40 @@ export interface WishlistItem {
   vote_average: number;
   release_date: string;
   addedAt: Date;
+  type?: 'movie' | 'tv';
+  }
+
+export interface TVShow {
+  id: number;
+  name: string;
+  poster_path: string;
+  backdrop_path: string;
+  overview: string;
+  first_air_date: string;
+  vote_average: number;
+  genre_ids?: number[];
+  original_language: string;
+}
+
+export interface TVShowDetails extends TVShow {
+  number_of_seasons: number;
+  number_of_episodes: number;
+  genres: Genre[];
+  status: string;
+  tagline: string;
+  last_air_date: string;
+  episode_run_time: number[];
+  created_by: Creator[];
+}
+export interface Creator {
+  id: number;
+  name: string;
+  profile_path: string | null;
+}
+
+export interface TVShowResponse {
+  page: number;
+  results: TVShow[];
+  total_pages: number;
+  total_results: number;
 }

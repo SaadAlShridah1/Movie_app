@@ -1,0 +1,94 @@
+<div class="container">
+
+  @if (loading()) {
+    <p class="loading">Loading TV show details...</p>
+  }
+  
+  @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <button class="back-btn" (click)="goBack()">Back to Home</button>
+  }
+  
+  @else if (tvShow()) {
+    <div class="tv-details">
+      <button class="back-btn" (click)="goBack()"> Back to Home</button>
+      
+      <div class="hero" [style.background-image]="'url(' + getBackdropUrl(tvShow()!.backdrop_path) + ')'">
+        <div class="hero-content">
+          <img [src]="getImageUrl(tvShow()!.poster_path)" [alt]="tvShow()!.name" class="poster">
+          <div class="info">
+            <h1>{{ tvShow()!.name }}</h1>
+            <p class="tagline">{{ tvShow()!.tagline }}</p>
+            <div class="meta">
+              <span class="rating"> {{ tvShow()!.vote_average }}/10</span>
+              <span class="runtime"> {{ formatRuntime(tvShow()!.episode_run_time) }}</span>
+              <span class="episodes"> {{ tvShow()!.number_of_episodes }} episodes</span>
+              <span class="seasons"> {{ tvShow()!.number_of_seasons }} seasons</span>
+            </div>
+            <div class="dates">
+              <span class="first-air">📅 First aired: {{ tvShow()!.first_air_date | date }}</span>
+              @if (tvShow()!.last_air_date && tvShow()!.last_air_date !== tvShow()!.first_air_date) {
+                <span class="last-air">🏁 Last aired: {{ tvShow()!.last_air_date | date }}</span>
+              }
+              <span class="status">📊 Status: {{ tvShow()!.status }}</span>
+            </div>
+            <div class="genres">
+              @for (genre of tvShow()!.genres; track genre.id) {
+                <span class="genre">{{ genre.name }}</span>
+              }
+            </div>
+            @if (tvShow()!.created_by && tvShow()!.created_by.length > 0) {
+              <div class="creators">
+                <strong>Created by:</strong> {{ formatCreators(tvShow()!.created_by) }}
+              </div>
+            }
+            <button 
+              class="wishlist-btn-large"
+              (click)="toggleWishlist(tvShow()!)"
+              [class.active]="isInWishlist(tvShow()!.id)">
+              {{ isInWishlist(tvShow()!.id) ? ' Remove from Wishlist' : '🤍 Add to Wishlist' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overview">
+        <h2>Overview</h2>
+        <p>{{ tvShow()!.overview }}</p>
+      </div>
+      
+      @if (recommendationsLoading()) {
+        <div class="recommendations">
+          <h2>Similar TV Shows</h2>
+          <p>Loading recommendations...</p>
+        </div>
+      }
+      @else if (recommendationsError()) {
+        <div class="recommendations">
+          <h2>Similar TV Shows</h2>
+          <p class="error">{{ recommendationsError() }}</p>
+        </div>
+      }
+      @else if (recommendations() && recommendations().length > 0) {
+        <div class="recommendations">
+          <h2>Similar TV Shows</h2>
+          <div class="recommendations-grid">
+            @for (rec of recommendations(); track rec.id) {
+              <div class="recommendation-card" (click)="onRecommendationSelected(rec.id)">
+                <img 
+                  [src]="getImageUrl(rec.poster_path)" 
+                  [alt]="rec.name"
+                  class="rec-poster"
+                >
+                <div class="rec-info">
+                  <h4>{{ rec.name }}</h4>
+                  <p class="rec-rating"> {{ rec.vote_average }}/10</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
