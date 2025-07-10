@@ -11,24 +11,34 @@ export class WishlistService {
   wishlistCount = computed(() => this.wishlistItems().length);
   getWishlistItems = computed(() => this.wishlistItems());
 
+  getMovieItems = computed(() => 
+    this.wishlistItems().filter(item => item.type === 'movie'));
+
+   getTVItems = computed(() => 
+    this.wishlistItems().filter(item => item.type === 'tv'));
+  
+  movieCount = computed(() => this.getMovieItems().length);
+  tvCount = computed(() => this.getTVItems().length);
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
       this.loadFromLocalStorage();
     }
   }
 
-  addToWishlist(movie: any): void {
+  addToWishlist(item: any): void {
     const wishlistItem: WishlistItem = {
-      id: movie.id,
-      title: movie.title,
-      poster_path: movie.poster_path,
-      vote_average: movie.vote_average,
-      release_date: movie.release_date,
-      addedAt: new Date()
+      id: item.id,
+       title: item.title || item.name,
+      poster_path: item.poster_path,
+      vote_average: item.vote_average,
+      release_date: item.release_date || item.first_air_date,
+      addedAt: new Date(),
+      type: item.type || 'movie'
     };
 
     this.wishlistItems.update(items => {
-      if (items.find(item => item.id === movie.id)) {
+      if (items.find(existingItem => existingItem.id === item.id && existingItem.type === wishlistItem.type)) {
         return items;
       }
       return [...items, wishlistItem];
@@ -37,15 +47,16 @@ export class WishlistService {
     this.saveToLocalStorage();
   }
 
-  removeFromWishlist(movieId: number): void {
+  removeFromWishlist(itemId: number, type?: 'movie' | 'tv'): void {
     this.wishlistItems.update(items => 
-      items.filter(item => item.id !== movieId)
+      items.filter(item => !(item.id === itemId && (type ? item.type === type : true)))
     );
     this.saveToLocalStorage();
   }
 
-  isInWishlist = computed(() => (movieId: number) => {
-    return this.wishlistItems().some(item => item.id === movieId);
+  isInWishlist = computed(() => (itemId: number, type?: 'movie' | 'tv') => {
+    return this.wishlistItems().some(item => 
+      item.id === itemId && (type ? item.type === type : true));
   });
 
   toggleWishlist(movie: any): void {
@@ -58,6 +69,14 @@ export class WishlistService {
 
   clearWishlist(): void {
     this.wishlistItems.set([]);
+    this.saveToLocalStorage();
+  }
+  clearMovies(): void {
+    this.wishlistItems.update(items => items.filter(item => item.type !== 'movie'));
+    this.saveToLocalStorage();
+  }
+  clearTVShows(): void {
+    this.wishlistItems.update(items => items.filter(item => item.type !== 'tv'));
     this.saveToLocalStorage();
   }
 
@@ -78,6 +97,12 @@ export class WishlistService {
         if (saved) {
           const items = JSON.parse(saved);
           this.wishlistItems.set(items);
+          const itemsWithType = items.map((item: any) => ({
+            ...item,
+            type: item.type || 'movie',
+            addedAt: item.addedAt ? new Date(item.addedAt) : new Date()}));
+             this.wishlistItems.set(itemsWithType);
+
         }
       } catch (error) {
         console.error('Error loading wishlist from localStorage:', error);

@@ -1,49 +1,105 @@
-<div class="wishlist-container">
+<div class="container">
   <div class="wishlist-header">
-    <button class="back-btn" (click)="goBack()">← Back to Movies</button>
     <h1>My Wishlist</h1>
-    @if (wishlistCount > 0) {
-      <button class="clear-btn" (click)="clearAllWishlist()">
-        Clear All ({{ wishlistCount }})
-      </button>
-    }
+    <button class="back-btn" (click)="goBack()">Back to Home</button>
   </div>
 
-  @if (wishlistCount === 0) {
-    <div class="empty-wishlist">
-      <div class="empty-icon">💔</div>
-      <h2>Your wishlist is empty</h2>
-      <p>Start adding movies to your wishlist by clicking the heart icon!</p>
-      <button class="browse-btn" (click)="goBack()">
-        Browse Movies
+  @if (wishlistCount > 0) {
+    <div class="wishlist-tabs">
+      <button 
+        class="tab-btn"
+        [class.active]="activeTab() === 'all'"
+        (click)="setActiveTab('all')">
+        All ({{ wishlistCount }})
       </button>
+      <button 
+        class="tab-btn"
+        [class.active]="activeTab() === 'movies'"
+        (click)="setActiveTab('movies')">
+        Movies ({{ movieCount }})
+      </button>
+      <button 
+        class="tab-btn"
+        [class.active]="activeTab() === 'tv'"
+        (click)="setActiveTab('tv')">
+        TV Shows ({{ tvCount }})
+      </button>
+    </div>
+
+    <div class="clear-actions">
+      @if (activeTab() === 'all') {
+        <button class="clear-btn clear-all" (click)="clearAllWishlist()">
+          Clear All
+        </button>
+      }
+      @else if (activeTab() === 'movies') {
+        <button class="clear-btn clear-movies" (click)="clearMovies()">
+          Clear Movies
+        </button>
+      }
+      @else if (activeTab() === 'tv') {
+        <button class="clear-btn clear-tv" (click)="clearTVShows()">
+          Clear TV Shows
+        </button>
+      }
+    </div>
+
+    <div class="wishlist-content">
+      @if (displayItems.length === 0) {
+        <div class="empty-state">
+          <p>No {{ activeTab() === 'movies' ? 'movies' : activeTab() === 'tv' ? 'TV shows' : 'items' }} in your wishlist.</p>
+        </div>
+      }
+      @else {
+        <div class="wishlist-grid">
+          @for (item of displayItems; track item.id + '-' + item.type) {
+            <div class="wishlist-card" (click)="goToDetails(item)">
+              <div class="content-type-badge" [class]="item.type">
+                {{ getContentTypeLabel(item.type!) }}
+              </div>
+              
+              <button 
+                class="remove-btn"
+                (click)="removeFromWishlist(item.id, item.type!); $event.stopPropagation()"
+                aria-label="Remove from wishlist">
+                ✕
+              </button>   
+              <img 
+                [src]="getImageUrl(item.poster_path)"
+                [alt]="item.title"
+                class="wishlist-poster">
+              
+              <div class="wishlist-info">
+                <h3>{{ item.title }}</h3>
+                <p class="rating">⭐ {{ item.vote_average }}/10</p>
+                <p class="release-date">
+                  {{ item.type === 'tv' ? 'First aired:' : 'Released:' }} 
+                  {{ item.release_date | date }}
+                </p>
+                <p class="added-date">
+                  Added: {{ item.addedAt | date:'short' }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
   }
 
   @else {
-    <div class="wishlist-grid">
-      @for (item of wishlistItems; track item.id) {
-        <div class="wishlist-card">
-          <button 
-            class="remove-btn" 
-            (click)="removeFromWishlist(item.id)"
-            aria-label="Remove from wishlist">
-            ✕
-          </button>
-
-          <img 
-            [src]="getImageUrl(item.poster_path)" 
-            [alt]="item.title"
-            class="wishlist-poster"
-            (click)="goToMovieDetails(item.id)">
-
-          <div class="wishlist-info">
-            <h3 (click)="goToMovieDetails(item.id)">{{ item.title }}</h3>
-            <p class="rating">⭐ {{ item.vote_average }}/10</p>
-            <p class="added-date">Added: {{ item.addedAt | date:'short' }}</p>
-          </div>
-        </div>
-      }
+    <div class="empty-wishlist">
+      <div class="empty-icon"></div>
+      <h2>Your wishlist is empty</h2>
+      <p>Start adding movies and TV shows to your favorites!</p>
+      <div class="empty-actions">
+        <button class="action-btn" (click)="navigateToMovies()">
+          Browse Movies
+        </button>
+        <button class="action-btn" (click)="navigateToTVShows()">
+          Browse TV Shows
+        </button>
+      </div>
     </div>
   }
 </div>
