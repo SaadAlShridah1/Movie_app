@@ -1,131 +1,302 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Movie, MovieDetails, MovieResponse, Recommendation, Review, ReviewsResponse, TVShow, TVShowDetails, TVShowResponse } from '../interfaces/movie.interface';
 import { LanguageService } from './language.service';
+import { environment } from './../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MovieService {
   private http = inject(HttpClient);
-    private languageService = inject(LanguageService);
-  private apiKey = '5d5adcf0c34d191699b009292dd97ef3'; 
-  private baseUrl = 'https://api.themoviedb.org/3';
+  private languageService = inject(LanguageService);
+  private baseUrl = environment.api.tmdb.baseUrl;
+  private apiKey = environment.api.tmdb.token; 
+  private imageBaseUrl = environment.api.tmdb.imageBaseUrl;
+
+  private moviesSignal = signal<Movie[]>([]);
+  private tvShowsSignal = signal<TVShow[]>([]);
+  private movieDetailsSignal = signal<MovieDetails | null>(null);
+  private tvDetailsSignal = signal<TVShowDetails | null>(null);
+  private searchResultsSignal = signal<Movie[]>([]);
+  private recommendationsSignal = signal<Movie[]>([]);
+  private reviewsSignal = signal<Review[]>([]);
+  private loadingSignal = signal<boolean>(false);
+  private errorSignal = signal<string>('');
+
+  movies = this.moviesSignal.asReadonly();
+  tvShows = this.tvShowsSignal.asReadonly();
+  movieDetails = this.movieDetailsSignal.asReadonly();
+  tvDetails = this.tvDetailsSignal.asReadonly();
+  searchResults = this.searchResultsSignal.asReadonly();
+  recommendations = this.recommendationsSignal.asReadonly();
+  reviews = this.reviewsSignal.asReadonly();
+  loading = this.loadingSignal.asReadonly();
+  error = this.errorSignal.asReadonly();
 
   async getMovies(page: number = 1): Promise<MovieResponse> {
-        const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/movie/now_playing?api_key=${this.apiKey}&page=${page}&language=${language}`;
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch movies');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/movie/now_playing`;
+      const params = {
+        api_key: this.apiKey,
+        page: page.toString(),
+        language: language
+      };
+      const response = await firstValueFrom(this.http.get<MovieResponse>(url, { params }));
+      this.moviesSignal.set(response.results);
+      return response;
+      
+    } catch (error) {
+      const errorMessage = 'Failed to fetch movies';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    return await response.json();
   }
   async searchMovies(query: string, page: number = 1): Promise<MovieResponse> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/search/movie?api_key=${this.apiKey}&query=${encodeURIComponent(query)}&page=${page}&language=${language}`;
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error('Failed to search movies');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/search/movie`;
+      
+      const params = {
+        api_key: this.apiKey,
+        query: query,
+        page: page.toString(),
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<MovieResponse>(url, { params })
+      );
+      
+      this.searchResultsSignal.set(response.results);
+      return response;
+      
+    } catch (error) {
+      const errorMessage = 'Failed to search movies';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    return await response.json();
   }
     async getMovieDetails(movieId: number): Promise<MovieDetails> {
-      const language = this.languageService.getCurrentLanguage().code;
-      const url = `${this.baseUrl}/movie/${movieId}?api_key=${this.apiKey}&language=${language}`;
-      const response = await fetch(url);
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch movie details');
-      }
-      return await response.json();
-  }
-
-  async getMovieRecommendations(movieId: number): Promise<Movie[]> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/movie/${movieId}/recommendations?api_key=${this.apiKey}&language=${language}`;
-    console.log('Recommendations URL:', url);
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-          console.error('Recommendations API error:', response.status, response.statusText);
-      throw new Error('Failed to fetch movie recommendations');
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/movie/${movieId}`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<MovieDetails>(url, { params })
+      );
+      
+      this.movieDetailsSignal.set(response);
+      return response;
+      
+    } catch (error) {
+      const errorMessage = 'Failed to fetch movie details';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    const data: Recommendation = await response.json();
-    console.log('Recommendations data:', data);
-    return data.results;
+  }
+  async getMovieRecommendations(movieId: number): Promise<Movie[]> {
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/movie/${movieId}/recommendations`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<Recommendation>(url, { params })
+      );
+      
+      this.recommendationsSignal.set(response.results);
+      console.log('Recommendations data:', response);
+      return response.results;
+      
+    } catch (error) {
+      console.error('Recommendations API error:', error);
+      const errorMessage = 'Failed to fetch movie recommendations';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
+    }
   }
   async getMovieReviews(movieId: number): Promise<Review[]> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/movie/${movieId}/reviews?api_key=${this.apiKey}&language=${language}`;
-      console.log('Reviews URL:', url);
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-          console.error('Reviews API error:', response.status, response.statusText);
-      throw new Error('Failed to fetch movie reviews');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/movie/${movieId}/reviews`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<ReviewsResponse>(url, { params })
+      );
+      
+      this.reviewsSignal.set(response.results);
+      console.log('Reviews data:', response);
+      return response.results;
+      
+    } catch (error) {
+      console.error('Reviews API error:', error);
+      const errorMessage = 'Failed to fetch movie reviews';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    const data: ReviewsResponse = await response.json();
-    return data.results;
   }
   async getTVShows(page: number = 1): Promise<TVShowResponse> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/tv/popular?api_key=${this.apiKey}&page=${page}&language=${language}`;
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch TV shows');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/tv/popular`;
+      
+      const params = {
+        api_key: this.apiKey,
+        page: page.toString(),
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<TVShowResponse>(url, { params })
+      );
+      
+      this.tvShowsSignal.set(response.results);
+      return response;
+      
+    } catch (error) {
+      const errorMessage = 'Failed to fetch TV shows';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    return await response.json();
   }
+
   async getTVShowDetails(tvId: number): Promise<TVShowDetails> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/tv/${tvId}?api_key=${this.apiKey}&language=${language}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch TV show details');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/tv/${tvId}`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<TVShowDetails>(url, { params })
+      );
+      
+      this.tvDetailsSignal.set(response);
+      return response;
+      
+    } catch (error) {
+      const errorMessage = 'Failed to fetch TV show details';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    return await response.json();
   }
+
   async getTVShowRecommendations(tvId: number): Promise<TVShow[]> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/tv/${tvId}/recommendations?api_key=${this.apiKey}&language=${language}`;
-    console.log('TV Recommendations URL:', url);
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      console.error('TV Recommendations API error:', response.status, response.statusText);
-      throw new Error('Failed to fetch TV show recommendations');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/tv/${tvId}/recommendations`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<{ results: TVShow[] }>(url, { params })
+      );
+      
+      console.log('TV Recommendations data:', response);
+      return response.results;
+      
+    } catch (error) {
+      console.error('TV Recommendations API error:', error);
+      const errorMessage = 'Failed to fetch TV show recommendations';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    const data = await response.json();
-    console.log('TV Recommendations data:', data);
-    return data.results;
   }
 
   async getTVShowReviews(tvId: number): Promise<Review[]> {
-    const language = this.languageService.getCurrentLanguage().code;
-    const url = `${this.baseUrl}/tv/${tvId}/reviews?api_key=${this.apiKey}&language=${language}`;
-    console.log('TV Reviews URL:', url);
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      console.error('TV Reviews API error:', response.status, response.statusText);
-      throw new Error('Failed to fetch TV show reviews');
+    try {
+      this.loadingSignal.set(true);
+      this.errorSignal.set('');
+      
+      const language = this.languageService.getCurrentLanguage().code;
+      const url = `${this.baseUrl}/tv/${tvId}/reviews`;
+      
+      const params = {
+        api_key: this.apiKey,
+        language: language
+      };
+      
+      const response = await firstValueFrom(
+        this.http.get<ReviewsResponse>(url, { params })
+      );
+      
+      console.log('TV Reviews data:', response);
+      return response.results;
+      
+    } catch (error) {
+      console.error('TV Reviews API error:', error);
+      const errorMessage = 'Failed to fetch TV show reviews';
+      this.errorSignal.set(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      this.loadingSignal.set(false);
     }
-    
-    const data: ReviewsResponse = await response.json();
-    return data.results;
   }
   
   getImageUrl(path: string | null, size: string = 'w500'): string {
     if (!path) return 'assets/placeholder.jpg';
-    return `https://image.tmdb.org/t/p/${size}${path}`;
+    return `${this.imageBaseUrl}/${size}${path}`;
   }
 
   getBackdropUrl(path: string | null): string {
