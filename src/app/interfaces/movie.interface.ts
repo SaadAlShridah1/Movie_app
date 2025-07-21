@@ -17,6 +17,9 @@ export interface Genre {
 }
 
 export interface MovieDetails extends Movie {
+homepage: any;
+production_companies: any;
+spoken_languages: any;
   runtime: number;
   genres: Genre[];
   status: string;
