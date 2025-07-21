@@ -1,8 +1,7 @@
-import { Component, Input, inject, OnInit, signal} from '@angular/core';
+import { Component, inject, OnInit, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MovieService } from '../../services/movie.service';
 import { Review } from '../../interfaces/movie.interface';
-import { sign } from 'crypto';
 
 @Component({
   selector: 'app-movie-reviews',
@@ -12,7 +11,7 @@ import { sign } from 'crypto';
   styleUrls: ['./movie-reviews.component.scss']
 })
 export class MovieReviewsComponent implements OnInit {
-  @Input() movieId!: number; 
+  movieId = input.required<number>();
   
   private movieService = inject(MovieService);
   
@@ -30,7 +29,7 @@ export class MovieReviewsComponent implements OnInit {
      this.loading.set(true);
       this.error.set('');
       console.log('Loading reviews for movie ID:', this.movieId);
-      const reviewsData = await this.movieService.getMovieReviews(this.movieId);
+      const reviewsData = await this.movieService.getMovieReviews(this.movieId());
       this.reviews.set(reviewsData);
       console.log('Loaded reviews:', reviewsData);
       this.loading.set(false);

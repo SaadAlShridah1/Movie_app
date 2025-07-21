@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../interfaces/movie.interface';
@@ -11,8 +11,8 @@ import { Movie } from '../../interfaces/movie.interface';
   styleUrls: ['./movie-recommendations.component.scss']
 })
 export class MovieRecommendationsComponent implements OnInit {
-  @Input() movieId!: number;
-  @Output() movieSelected = new EventEmitter<number>();
+  movieId = input.required<number>();
+  movieSelected = output<number>();
   
   private movieService = inject(MovieService);
   
@@ -28,7 +28,7 @@ export class MovieRecommendationsComponent implements OnInit {
   async loadRecommendations() {
     try {
       console.log('Loading recommendations for movie ID:', this.movieId); 
-      this.recommendations = await this.movieService.getMovieRecommendations(this.movieId);
+      this.recommendations = await this.movieService.getMovieRecommendations(this.movieId());
       console.log('Loaded recommendations:', this.recommendations); 
       this.loading = false;
     } catch (error) {
