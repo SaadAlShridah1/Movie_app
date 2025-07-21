@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -13,7 +13,7 @@ import { LanguageService } from '../../services/language.service';
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
-export class MovieDetailsComponent {
+export class MovieDetailsComponent implements OnInit {
   private movieService = inject(MovieService);
   private wishlistService = inject(WishlistService);
   private route = inject(ActivatedRoute);
@@ -27,7 +27,6 @@ export class MovieDetailsComponent {
   error = signal('');
 
   constructor() {
-    this.loadMovieDetails();
     effect(() => {
       this.languageService.getCurrentLanguage();
       if(this.movieId) {
@@ -36,6 +35,9 @@ export class MovieDetailsComponent {
         this.loadMovieDetails();
       }
     });
+  }
+  ngOnInit() {
+    this.loadMovieDetails();
   }
 
   async loadMovieDetails() {
@@ -59,7 +61,7 @@ export class MovieDetailsComponent {
   async loadRecommendations() {
     try {
       const recs = await this.movieService.getMovieRecommendations(this.movieId);
-      this.recommendations.set(recs.slice(0, 6)); // Show only 6 recommendations
+      this.recommendations.set(recs.slice(0, 6)); 
     } catch (error) {
       console.error('Error loading recommendations:', error);
     }

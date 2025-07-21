@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -13,7 +13,7 @@ import { TVShow } from '../../interfaces/movie.interface';
   templateUrl: './tv-shows-page.component.html',
   styleUrls: ['./tv-shows-page.component.scss']
 })
-export class TVShowsPageComponent {
+export class TVShowsPageComponent implements OnInit {
   private movieService = inject(MovieService);
   private languageService = inject(LanguageService);
   private wishlistService = inject(WishlistService);
@@ -29,13 +29,14 @@ export class TVShowsPageComponent {
   canGoNext = computed(() => this.currentPage() < this.totalPages());
 
   constructor() {
-    this.loadTVShows();
-
     effect(() => {
       this.languageService.getCurrentLanguage();
       this.currentPage.set(1);
       this.loadTVShows();
     });
+  }
+  ngOnInit() {
+    this.loadTVShows();
   }
 
   async loadTVShows() {
@@ -56,7 +57,6 @@ export class TVShowsPageComponent {
     if (page < 1 || page > this.totalPages()) return;
     this.currentPage.set(page);
     await this.loadTVShows();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   nextPage() { this.goToPage(this.currentPage() + 1); }

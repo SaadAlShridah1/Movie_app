@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -12,7 +12,7 @@ import { TVShowDetails, TVShow } from '../../interfaces/movie.interface';
   templateUrl: './tv-details.component.html',
   styleUrl: './tv-details.component.scss'
 })
-export class TVDetailsComponent {
+export class TVDetailsComponent implements OnInit {
   private movieService = inject(MovieService);
   private wishlistService = inject(WishlistService);
   private route = inject(ActivatedRoute);
@@ -27,9 +27,11 @@ export class TVDetailsComponent {
   recommendationsError = signal('');
 
   constructor() {
+  }
+  
+ngOnInit() {
     this.loadTVDetails();
   }
-
   async loadTVDetails() {
     try {
       this.tvId = Number(this.route.snapshot.paramMap.get('id'));

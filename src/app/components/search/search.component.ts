@@ -65,8 +65,6 @@ export class SearchComponent implements OnInit {
     
     this.currentPage.set(page);
     await this.searchMovies();
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async nextPage() {

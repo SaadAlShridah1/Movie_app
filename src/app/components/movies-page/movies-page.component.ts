@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -13,7 +13,7 @@ import { Movie } from '../../interfaces/movie.interface';
   templateUrl: './movies-page.component.html',
   styleUrls: ['./movies-page.component.scss']
 })
-export class MoviesPageComponent {
+export class MoviesPageComponent implements OnInit {
   private movieService = inject(MovieService);
   private languageService = inject(LanguageService);
   private wishlistService = inject(WishlistService);
@@ -29,13 +29,15 @@ export class MoviesPageComponent {
   canGoNext = computed(() => this.currentPage() < this.totalPages());
 
   constructor() {
-    this.loadMovies();
-
     effect(() => {
       this.languageService.getCurrentLanguage();
       this.currentPage.set(1);
       this.loadMovies();
     });
+  }
+
+  ngOnInit() {
+    this.loadMovies();
   }
 
   async loadMovies() {
@@ -56,7 +58,6 @@ export class MoviesPageComponent {
     if (page < 1 || page > this.totalPages()) return;
     this.currentPage.set(page);
     await this.loadMovies();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   nextPage() { this.goToPage(this.currentPage() + 1); }

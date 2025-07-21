@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -13,7 +13,7 @@ import { Movie, TVShow } from '../../interfaces/movie.interface';
   templateUrl: './content-tabs.component.html',
   styleUrls: ['./content-tabs.component.scss']
 })
-export class ContentTabsComponent {
+export class ContentTabsComponent implements OnInit {
   private movieService = inject(MovieService);
   private languageService = inject(LanguageService);
   private wishlistService = inject(WishlistService);
@@ -38,13 +38,13 @@ export class ContentTabsComponent {
   canGoPreviousTV = computed(() => this.tvPage() > 1);
   canGoNextTV = computed(() => this.tvPage() < this.tvTotalPages());
 
-  constructor() {
+  constructor() { 
+    effect(() => {
+   this.languageService.getCurrentLanguage();});
+  }
+  ngOnInit() {
     this.loadMovies();
     this.loadTVShows();
-
-    effect(() => {
-   this.languageService.getCurrentLanguage();
-});
   }
 
   setActiveTab(tab: 'movies' | 'tv') {
@@ -79,7 +79,6 @@ export class ContentTabsComponent {
   if (page < 1 || page > this.moviesTotalPages()) return;
   this.moviesPage.set(page);
   await this.loadMovies();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
   nextMoviesPage() { this.goToMoviesPage(this.moviesPage() + 1); }
@@ -103,7 +102,6 @@ export class ContentTabsComponent {
     if (page < 1 || page > this.tvTotalPages()) return;
     this.tvPage.set(page);
     await this.loadTVShows();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   nextTVPage() { this.goToTVPage(this.tvPage() + 1); }
