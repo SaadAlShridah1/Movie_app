@@ -14,6 +14,9 @@ import { Movie, TVShow } from '../../interfaces/movie.interface';
   styleUrls: ['./content-tabs.component.scss']
 })
 export class ContentTabsComponent implements OnInit {
+setPage(arg0: number) {
+throw new Error('Method not implemented.');
+}
   private movieService = inject(MovieService);
   private languageService = inject(LanguageService);
   private wishlistService = inject(WishlistService);

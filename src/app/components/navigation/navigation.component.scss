@@ -5,17 +5,15 @@
   opacity: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0;
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
 .nav-container {
-  width: 1403px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
 }
 
 .nav-brand {
@@ -26,8 +24,11 @@
     color: black;
     font-family: Inter;
     font-weight: 700;
-    font-size: 18px;
+    font-style: normal;
+    font-size: 15px;
     line-height: 100%;
+    letter-spacing: 0%;
+    opacity: 1;
   }
 }
 
@@ -35,10 +36,6 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  
-  a {
-    display: none;
-  }
 }
 
 .wishlist-nav-btn {
@@ -49,12 +46,15 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  position: relative;
 }
 
 .wishlist-icon {
-  width: 29.213px;
-  height: 26px;
-  opacity: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   img {
     width: 100%;
@@ -66,7 +66,7 @@
 .wishlist-text {
   font-family: Inter;
   font-weight: 700;
-  font-style: bold;
+  font-style: normal;
   font-size: 15px;
   line-height: 100%;
   letter-spacing: 0%;
@@ -74,17 +74,20 @@
 }
 
 .wishlist-counter {
-  background: red;
-  color: white;
-  border-radius: 50%;
-  min-width: 16px;
-  height: 16px;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  width: 24px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  position: relative;
-  top: -8px;
-  left: -8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Inter;
+  padding: 0 6px;
+  margin-left: 4px;
+  position: static;
+  top: auto;
+  left: auto;
 }

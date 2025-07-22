@@ -1,24 +1,36 @@
 .language-selector {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: none;
 }
 
 .language-dropdown {
-  width: 19px;
-  height: 18px;
-  background: transparent;
-  border: none;
-  font-family: Inter;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 15px;
+  font-style: normal;
   line-height: 100%;
-  color: black;
-  cursor: pointer;
+  letter-spacing: 0;
+  width: 19px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: #000;
   appearance: none;
-  opacity: 1;
+  cursor: pointer;
+
+  &::-ms-expand {
+    display: none;
+  }
 }
 
 .dropdown-icon {
-  display: none;
+  display: flex;
+  align-items: center;
+
+  img {
+    opacity: 1;
+  }
 }

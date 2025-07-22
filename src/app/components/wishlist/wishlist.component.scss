@@ -70,8 +70,9 @@
 }
 
 .wishlist-poster {
-  width: 140px;
-  height: 200px;
+  width: 194px;
+  height: 289px;
+  border-radius: 27px;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -84,9 +85,8 @@
   position: relative;
 
   h3 {
-    color: #333;
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 400;
     margin: 0 0 8px 0;
     font-family: Inter;
     line-height: 1.2;
@@ -114,7 +114,6 @@
 
   .star.filled {
     color: #333;
-    fill: #333;
   }
 
   .star.empty {

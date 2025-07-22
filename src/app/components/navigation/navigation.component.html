@@ -1,27 +1,21 @@
 <nav class="navbar">
   <div class="nav-container">
     <div class="nav-brand" (click)="navigateToHome()">
-      <h2> MovieApp</h2>
+      <h2>Movie App</h2>
     </div>
 
     <div class="nav-links">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        Home
-      </a>
-      <a routerLink="/search" routerLinkActive="active">
-        Search
-      </a>
+      <app-language-selector></app-language-selector>
       
       <button class="wishlist-nav-btn" (click)="navigateToWishlist()">
-  <span class="wishlist-icon">
-    <img src="/assets/heart.png" alt="wishlist">
-  </span>
-  <span class="wishlist-text">Wishlist</span>
-  @if (wishlistCount > 0) {
-    <span class="wishlist-counter">{{ wishlistCount }}</span>
-  }
-</button>
-         <app-language-selector></app-language-selector>
+        <span class="wishlist-icon">
+          <img src="/assets/heart.png" alt="wishlist">
+        </span>
+        <span class="wishlist-text">Wishlist</span>
+        @if (wishlistCount > 0) {
+          <span class="wishlist-counter">{{ wishlistCount }}</span>
+        }
+      </button>
     </div>
   </div>
 </nav>

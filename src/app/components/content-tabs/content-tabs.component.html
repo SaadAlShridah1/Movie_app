@@ -37,7 +37,7 @@
     
     @else {
       <div class="content-grid">
-        @for (movie of movies(); track movie.id) {
+        @for (movie of movies().slice(0, 6); track movie.id) {
           <div class="content-card" (click)="goToMovieDetails(movie.id)">
             <img 
               [src]="getImageUrl(movie.poster_path)"
@@ -45,15 +45,48 @@
               class="content-poster"
             >
             
-            <div 
-              class="rating-circle"
-              [class.good]="movie.vote_average >= 7"
-              [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
-              [class.poor]="movie.vote_average < 5">
-              {{ (movie.vote_average * 10) | number:'1.0-0' }}
+            <div class="content-info">
+              <div 
+                class="rating-circle"
+                [class.good]="movie.vote_average >= 7"
+                [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+                [class.poor]="movie.vote_average < 5">
+                <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
+              </div>
+              
+              <h3>{{ movie.title }}</h3>
+              <div class="movie-meta">
+                <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
+                <img 
+                  [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                  [alt]="isInWishlist(movie.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                  class="heart-icon"
+                  (click)="toggleMovieWishlist($event, movie)"
+                >
+              </div>
             </div>
+          </div>
+        }
+      </div>
+
+      <div class="content-grid-second">
+        @for (movie of movies().slice(6, 12); track movie.id) {
+          <div class="content-card" (click)="goToMovieDetails(movie.id)">
+            <img 
+              [src]="getImageUrl(movie.poster_path)"
+              [alt]="movie.title"
+              class="content-poster"
+            >
             
             <div class="content-info">
+              <div 
+                class="rating-circle"
+                [class.good]="movie.vote_average >= 7"
+                [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+                [class.poor]="movie.vote_average < 5">
+                <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
+              </div>
+              
               <h3>{{ movie.title }}</h3>
               <div class="movie-meta">
                 <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>

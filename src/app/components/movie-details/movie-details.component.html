@@ -23,9 +23,11 @@
           <div class="rating-section">
             <div class="star-rating">
               @for (star of getStars(movie()!.vote_average); track $index) {
-                <svg class="star" [class.empty]="!star.filled" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
+                <img 
+                  class="star" 
+                  [src]="star.filled ? '/assets/fillStar.png' : '/assets/emptyStar.png'"
+                  [alt]="star.filled ? 'Filled star' : 'Empty star'"
+                >
               }
             </div>
             <span class="rating-number">{{ (movie()!.vote_average * 1000) | number:'1.0-0' }}</span>
@@ -56,17 +58,21 @@
             </div>
             
             <a href="#" class="website-link">
-              Website 🔗
+              Website
+              <img src="/assets/link.png" alt="External link">
             </a>
           </div>
         </div>
         
         <button class="wishlist-heart" (click)="toggleWishlist(movie()!)" [class.active]="isInWishlist(movie()!.id)">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
+          <img 
+            [src]="isInWishlist(movie()!.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+            [alt]="isInWishlist(movie()!.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+          >
         </button>
       </div>
+      
+      <hr class="divider-line">
       
       <div class="recommendations">
         <h2>Recommendations</h2>
@@ -78,7 +84,13 @@
                 [alt]="rec.title"
                 class="rec-poster"
               >
-              <div class="rating-badge">{{ (rec.vote_average * 10) | number:'1.0-0' }}</div>
+              <div 
+                class="rating-badge"
+                [class.good]="rec.vote_average >= 7"
+                [class.average]="rec.vote_average >= 5 && rec.vote_average < 7"
+                [class.poor]="rec.vote_average < 5">
+                <span>{{ (rec.vote_average * 10) | number:'1.0-0' }}</span>
+              </div>
               <div class="rec-info">
                 <h4>{{ rec.title }}</h4>
                 <p class="rec-date">{{ rec.release_date | date:'MMM dd, yyyy' }}</p>
