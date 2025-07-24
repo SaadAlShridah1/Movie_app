@@ -5,12 +5,21 @@
   opacity: 1;
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 50px;
   box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
 }
 
 .nav-container {
   width: 100%;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,17 +34,22 @@
     font-family: Inter;
     font-weight: 700;
     font-style: normal;
-    font-size: 15px;
+    font-size: 18px;
     line-height: 100%;
     letter-spacing: 0%;
     opacity: 1;
+    white-space: nowrap;
   }
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
+
+  @media (max-width: 600px) {
+    gap: 20px;
+  }
 }
 
 .wishlist-nav-btn {
@@ -47,14 +61,16 @@
   cursor: pointer;
   padding: 0;
   position: relative;
+  font-family: Inter;
 }
 
 .wishlist-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   
   img {
     width: 100%;
@@ -65,29 +81,67 @@
 
 .wishlist-text {
   font-family: Inter;
-  font-weight: 700;
+  font-weight: 600;
   font-style: normal;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
   color: black;
+  white-space: nowrap;
+
+  @media (max-width: 600px) {
+    display: none;
+  }
 }
 
 .wishlist-counter {
   background: white;
   color: black;
   border-radius: 5px;
-  width: 24px;
+  min-width: 18px;
   height: 22px;
+  margin-bottom:20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   font-family: Inter;
-  padding: 0 6px;
-  margin-left: 4px;
-  position: static;
-  top: auto;
-  left: auto;
+  padding: 0 4px;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+app-language-selector {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
+  
+  .language-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  select, button, .language-dropdown {
+    min-width: 40px;
+    max-width: 120px;
+    padding: 6px 12px;
+    font-size: 16px;
+    font-family: Inter;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 600px) {
+    select, button, .language-dropdown {
+      min-width: 35px;
+      max-width: 100px;
+      font-size: 14px;
+      padding: 4px 8px;
+    }
+  }
 }
