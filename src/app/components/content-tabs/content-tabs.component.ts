@@ -14,9 +14,6 @@ import { Movie, TVShow } from '../../interfaces/movie.interface';
   styleUrls: ['./content-tabs.component.scss']
 })
 export class ContentTabsComponent implements OnInit {
-setPage(arg0: number) {
-throw new Error('Method not implemented.');
-}
   private movieService = inject(MovieService);
   private languageService = inject(LanguageService);
   private wishlistService = inject(WishlistService);
@@ -25,12 +22,12 @@ throw new Error('Method not implemented.');
   activeTab = signal<'movies' | 'tv'>('movies');
   movies = signal<Movie[]>([]);
   tvShows = signal<TVShow[]>([]);
-  
+
   moviesPage = signal(1);
   moviesTotalPages = signal(1);
   tvPage = signal(1);
   tvTotalPages = signal(1);
-  
+
   moviesLoading = signal(true);
   moviesError = signal('');
   tvLoading = signal(true);
@@ -41,13 +38,21 @@ throw new Error('Method not implemented.');
   canGoPreviousTV = computed(() => this.tvPage() > 1);
   canGoNextTV = computed(() => this.tvPage() < this.tvTotalPages());
 
-  constructor() { 
+  constructor() {
     effect(() => {
-   this.languageService.getCurrentLanguage();});
+      this.languageService.getCurrentLanguage();
+
+      console.log('Language changed, reloading data...');
+      this.loadMovies();
+      this.loadTVShows();
+    });
   }
+
   ngOnInit() {
-    this.loadMovies();
-    this.loadTVShows();
+    this.moviesPage.set(1);
+      this.tvPage.set(1);
+      this.loadMovies();
+      this.loadTVShows();
   }
 
   setActiveTab(tab: 'movies' | 'tv') {
@@ -55,7 +60,6 @@ throw new Error('Method not implemented.');
   }
 
   navigateToSearch(query: string) {
-    console.log('Navigate to search called with query:', query);
     if (query.trim()) {
       this.router.navigate(['/search'], { queryParams: { q: query.trim() } });
     } else {
@@ -78,11 +82,10 @@ throw new Error('Method not implemented.');
   }
 
   async goToMoviesPage(page: number) {
-  console.log('Going to page:', page, 'Total pages:', this.moviesTotalPages());
-  if (page < 1 || page > this.moviesTotalPages()) return;
-  this.moviesPage.set(page);
-  await this.loadMovies();
-}
+    if (page < 1 || page > this.moviesTotalPages()) return;
+    this.moviesPage.set(page);
+    await this.loadMovies();
+  }
 
   nextMoviesPage() { this.goToMoviesPage(this.moviesPage() + 1); }
   previousMoviesPage() { this.goToMoviesPage(this.moviesPage() - 1); }
@@ -115,7 +118,7 @@ throw new Error('Method not implemented.');
 
   toggleMovieWishlist(event: Event, movie: Movie) {
     event.stopPropagation();
-    this.wishlistService.toggleWishlist({...movie, type: 'movie'});
+    this.wishlistService.toggleWishlist({ ...movie, type: 'movie' });
   }
 
   toggleTVWishlist(event: Event, tvShow: TVShow) {
@@ -132,11 +135,10 @@ throw new Error('Method not implemented.');
   }
 
   getVisiblePages(): number[] {
-  const current = this.moviesPage();
-  const total = this.moviesTotalPages();
-  console.log('Current page:', current, 'Total pages:', total);
-  const pages: number[] = [];
-    
+    const current = this.moviesPage();
+    const total = this.moviesTotalPages();
+    const pages: number[] = [];
+
     if (total <= 7) {
       for (let i = 1; i <= total; i++) {
         pages.push(i);
@@ -144,20 +146,20 @@ throw new Error('Method not implemented.');
     } else {
       const start = Math.max(1, Math.min(current - 2, total - 4));
       const end = Math.min(total, start + 4);
-      
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
     }
-    
+
     return pages;
   }
 
-  isInWishlist(id: number): boolean { 
-    return this.wishlistService.isInWishlist()(id); 
+  isInWishlist(id: number): boolean {
+    return this.wishlistService.isInWishlist()(id);
   }
-  
-  getImageUrl(path: string | null): string { 
-    return this.movieService.getImageUrl(path); 
+
+  getImageUrl(path: string | null): string {
+    return this.movieService.getImageUrl(path);
   }
 }
