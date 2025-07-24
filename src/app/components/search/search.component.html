@@ -1,12 +1,12 @@
 <div class="search-container">
-  <div class="search-header">
-    <h1>Search Movies</h1>
+  <div class="search-header" [class.rtl]="isRTL()">
+    <h1>{{ getSearchTitle() }}</h1>
     
     <div class="search-input-container">
       <input 
         type="text" 
         class="search-input"
-        placeholder="Search for movies..."
+        [placeholder]="getSearchPlaceholder()"
         [value]="searchQuery()"
         (input)="onSearchInputChange($event)"
         (keyup.enter)="searchMovies()"
@@ -16,19 +16,17 @@
         type="button"
         class="search-btn" 
         (click)="searchMovies()">
-        Search
+        {{ getSearchButtonText() }}
       </button>
-      @if (searchQuery()) {
-        <button class="clear-btn" (click)="clearSearch()">
-          Clear
-        </button>
-      }
+      <button class="clear-btn" (click)="clearSearch()">
+        {{ getClearButtonText() }}
+      </button>
     </div>
   </div>
 
   @if (loading()) {
     <div class="loading">
-      <p>Searching movies...</p>
+      <p>{{ getLoadingText() }}</p>
     </div>
   }
 
@@ -40,17 +38,17 @@
 
   @else if (hasSearched() && searchResults().length === 0 && !loading()) {
     <div class="no-results">
-      <h2>No movies found for "{{ searchQuery() }}"</h2>
-      <p>Try searching with different keywords</p>
+      <h2>{{ getNoResultsText() }} "{{ searchQuery() }}"</h2>
+      <p>{{ getTryDifferentText() }}</p>
     </div>
   }
 
   @else if (searchResults().length > 0) {
     <div class="search-results">
-      <h2>Found {{ searchResults().length }} results for "{{ searchQuery() }}"</h2>
+      <h2>{{ getFoundResultsText() }} {{ searchResults().length }} {{ getResultsForText() }} "{{ searchQuery() }}"</h2>
 
       <div class="movies-grid">
-        @for (movie of searchResults(); track movie.id) {
+        @for (movie of searchResults().slice(0, 12); track movie.id) {
           <div class="movie-card" (click)="goToMovieDetails(movie.id)">
             <img 
               [src]="getImageUrl(movie.poster_path)"
@@ -58,15 +56,15 @@
               class="movie-poster"
             >
 
-            <div 
-              class="rating-circle"
-              [class.good]="movie.vote_average >= 7"
-              [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
-              [class.poor]="movie.vote_average < 5">
-              {{ (movie.vote_average * 10) | number:'1.0-0' }}
-            </div>
-
             <div class="movie-info">
+              <div 
+                class="rating-circle"
+                [class.good]="movie.vote_average >= 7"
+                [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
+                [class.poor]="movie.vote_average < 5">
+                <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
+              </div>
+              
               <h3>{{ movie.title }}</h3>
               <div class="movie-meta">
                 <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
@@ -130,8 +128,8 @@
   @else {
     <div class="search-placeholder">
       <div class="placeholder-icon">🎬</div>
-      <h2>Discover Movies</h2>
-      <p>Search for your favorite movies by title, genre, or keywords</p>
+      <h2>{{ getDiscoverTitle() }}</h2>
+      <p>{{ getDiscoverDescription() }}</p>
     </div>
   }
 </div>
