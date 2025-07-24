@@ -1,12 +1,13 @@
 <div class="language-selector">
   <select 
     class="language-dropdown"
+    [class.arabic-selected]="languageService.getCurrentLanguage().code === 'ar'"
     [value]="languageService.getCurrentLanguage().code"
     (change)="onLanguageChange($event)"
     aria-label="Select Language">
     @for (language of languageService.getAvailableLanguages(); track language.code) {
       <option [value]="language.code">
-        {{ language.name }}
+        {{ language.code === 'ar' ? language.name : language.code.toUpperCase().slice(0, 2) }}
       </option>
     }
   </select>

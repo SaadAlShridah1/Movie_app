@@ -18,7 +18,7 @@ export class LanguageService {
     { code: 'zh', name: '中文', direction: 'ltr' }
   ];
 
-  private currentLanguage = signal<Language>(this.availableLanguages[0]); 
+  private currentLanguage = signal<Language>(this.availableLanguages[0]);
 
   getCurrentLanguage = computed(() => this.currentLanguage());
   getDirection = computed(() => this.currentLanguage().direction);

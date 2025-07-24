@@ -17,7 +17,5 @@ export class LanguageSelectorComponent {
     const selectedLanguage = target.value;
     
     this.languageService.setLanguage(selectedLanguage);
-    
-    window.location.reload();
   }
 }

@@ -4,12 +4,11 @@
   min-height: 100vh;
 
   .tabs-header {
-    background-color: #e8e8e8;
+    background-color: #F3F1F1;
     padding: 50px 40px;
     margin: 60px 30px 0;
     width: calc(100% - 60px);
-    height: auto;
-    min-height: 256px;
+    height: 256px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -18,13 +17,14 @@
     border-radius: 8px;
 
     h1 {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 700;
       color: #000;
       margin-bottom: 12px;
       margin-left: 0;
       margin-right: 0;
-      width: 100%;
+      width: 415px;
+      height: 39px;
     }
 
     p {
@@ -43,6 +43,7 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      justify-content: flex-start;
 
       .search-input {
         flex: 1;
@@ -53,6 +54,8 @@
         border-radius: 10px;
         outline: none;
         background-color: white;
+        max-width: 100%; 
+        box-sizing: border-box;
 
         &::placeholder {
           color: #999;
@@ -82,13 +85,13 @@
       }
     }
 
-    @media (max-width: 768px) {
-      padding: 30px 20px;
-      text-align: center;
-      align-items: center;
+    @media (max-width: 1024px) {
+      padding: 40px 30px;
+      height: auto;
 
       h1 {
         font-size: 28px;
+        width: 100%;
         text-align: center;
       }
 
@@ -97,12 +100,70 @@
       }
 
       .search-container {
-        flex-direction: column;
         gap: 10px;
 
-        .search-input,
+        .search-input {
+          padding: 0 15px;
+          font-size: 15px;
+        }
+
+        .search-btn {
+          width: 100px;
+          font-size: 15px;
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 30px 20px;
+      align-items: center;
+
+      .search-container {
+        flex-direction: column;
+        gap: 15px;
+
+        .search-input {
+          width: 100%;
+          height: 42px;
+          padding: 0 15px;
+          font-size: 14px;
+        }
+
         .search-btn {
           width: 100%;
+          height: 42px;
+          font-size: 14px;
+        }
+      }
+    }
+
+    @media (max-width: 600px) {
+      padding: 20px 15px;
+      margin: 40px 15px 0;
+      width: calc(100% - 30px);
+
+      h1 {
+        font-size: 24px;
+      }
+
+      p {
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+
+      .search-container {
+        gap: 10px;
+
+        .search-input {
+          height: 38px;
+          padding: 0 10px;
+          font-size: 12px;
+        }
+
+        .search-btn {
+          width: 100%;
+          height: 38px;
+          font-size: 12px;
         }
       }
     }
@@ -131,18 +192,14 @@
       color: #ff6b6b;
     }
 
-    .content-grid, .content-grid-second {
+    .content-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(6, 1fr);
       gap: 24px;
       margin-bottom: 30px;
 
-      @media (min-width: 1600px) {
-        grid-template-columns: repeat(6, 1fr);
-      }
-
       @media (max-width: 1400px) {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
       }
 
       @media (max-width: 1200px) {
@@ -164,11 +221,12 @@
         cursor: pointer;
         transition: transform 0.3s ease;
         border-radius: 12px;
-        overflow: hidden;
+        overflow: visible;
         background-color: transparent;
 
         &:hover {
           transform: translateY(-5px);
+          z-index: 10;
 
           .content-poster {
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
@@ -257,8 +315,8 @@
           }
 
           h3 {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 1000;
             color: #000;
             margin-bottom: 6px;
             line-height: 1.2;
@@ -279,9 +337,9 @@
             align-items: center;
 
             .movie-date {
-              font-size: 14px;
-              color: #666;
-              font-weight: 400;
+              font-size: 18px;
+              color: #777676;
+              font-weight: 500;
 
               @media (max-width: 900px) {
                 font-size: 12px;
@@ -293,10 +351,11 @@
               height: 24px;
               cursor: pointer;
               transition: all 0.2s ease;
+              position: relative;
+              z-index: 20;
 
               &:hover {
                 transform: scale(1.1);
-                filter: grayscale(0%);
               }
 
               @media (max-width: 900px) {
@@ -345,6 +404,7 @@
         display: flex;
         align-items: center;
         gap: 4px;
+        flex-wrap: wrap;
 
         .page-btn {
           background-color: transparent;

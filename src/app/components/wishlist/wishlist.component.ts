@@ -11,6 +11,9 @@ import { WishlistService } from '../../services/wishlist.service';
   styleUrls: ['./wishlist.component.scss']
 })
 export class WishlistComponent {
+movie() {
+throw new Error('Method not implemented.');
+}
   wishlistService = inject(WishlistService);
   private router = inject(Router);
 
