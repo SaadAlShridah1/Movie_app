@@ -7,3 +7,53 @@
   overflow-y: auto;
   font-family: 'Inter', sans-serif;
 }
+body.rtl {
+  direction: rtl;
+  
+  .navbar {
+    .nav-container {
+      flex-direction: row-reverse;
+    }
+    
+    .nav-links {
+      flex-direction: row-reverse;
+    }
+    
+    .wishlist-nav-btn {
+      flex-direction: row-reverse;
+    }
+  }
+  
+  .search-header {
+    text-align: right;
+  }
+  
+  .search-input-container {
+    flex-direction: row-reverse;
+  }
+  
+  .movie-meta {
+    flex-direction: row-reverse;
+  }
+  
+  .tabs-header {
+    text-align: right;
+    align-items: flex-end;
+    
+    h1, p {
+      text-align: right;
+    }
+  }
+  
+  .pagination {
+    flex-direction: row-reverse;
+    
+    .page-numbers {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
+body.ltr {
+  direction: ltr;
+}
