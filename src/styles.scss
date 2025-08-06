@@ -7,6 +7,7 @@
   overflow-y: auto;
   font-family: 'Inter', sans-serif;
 }
+html[dir="rtl"] body, 
 body.rtl {
   direction: rtl;
   
@@ -50,6 +51,75 @@ body.rtl {
     
     .page-numbers {
       flex-direction: row-reverse;
+    }
+  }
+  
+  app-content-tabs .content-card,
+  .content-card {
+    .content-info {
+      .title-container {
+        margin-bottom: 0px !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        position: relative !important;
+
+        .heart-container-rtl {
+          display: flex !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          z-index: 10 !important;
+        }
+
+        h3 {
+          padding-right: 32px !important;
+          width: calc(100% - 32px) !important;
+          text-overflow: ellipsis !important;
+          overflow: hidden !important;
+          white-space: nowrap !important;
+          margin: 0 !important;
+          
+          @media (max-width: 900px) {
+            padding-right: 28px !important;
+            width: calc(100% - 28px) !important;
+          }
+        }
+        
+        .movie-date-rtl {
+          display: block !important;
+          font-size: 14px !important;
+          color: #999 !important;
+          font-weight: 400 !important;
+          margin: 0 !important;
+          
+          @media (max-width: 900px) {
+            font-size: 12px !important;
+          }
+        }
+      }
+
+      .movie-meta {
+        display: none !important;
+      }
+    }
+  }
+  
+  app-movie-details .hero {
+    .wishlist-heart {
+      right: auto !important;
+      left: 0 !important;
+      
+      @media (max-width: 1024px) {
+        left: 10px !important;
+        right: auto !important;
+      }
+      
+      @media (max-width: 768px) {
+        position: static !important;
+        margin: 20px auto 0 !important;
+      }
     }
   }
 }
