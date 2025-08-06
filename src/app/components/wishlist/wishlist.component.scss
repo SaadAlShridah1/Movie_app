@@ -106,22 +106,6 @@
   gap: 4px;
   margin-bottom: 12px;
 
-  .star {
-    width: 20px;
-    height: 20px;
-    color: #333;
-  }
-
-  .star.filled {
-    color: #333;
-  }
-
-  .star.empty {
-    color: #ddd;
-    fill: none;
-    stroke: #ddd;
-  }
-
   .rating-number {
     margin-left: 8px;
     font-size: 16px;
