@@ -24,7 +24,7 @@
             <div class="star-rating">
               @for (star of getStars(movie()!.vote_average); track $index) {
                 <img 
-                  class="star" 
+                  [class]="star.filled ? 'star-filled' : 'star-empty'" 
                   [src]="star.filled ? '/assets/fillStar.png' : '/assets/emptyStar.png'"
                   [alt]="star.filled ? 'Filled star' : 'Empty star'"
                 >
