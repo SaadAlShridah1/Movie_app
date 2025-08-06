@@ -1,6 +1,6 @@
-import { Component, effect, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { MovieDetails, Movie } from '../../interfaces/movie.interface';
@@ -13,12 +13,13 @@ import { LanguageService } from '../../services/language.service';
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
-export class MovieDetailsComponent implements OnInit {
+export class MovieDetailsComponent {
   private movieService = inject(MovieService);
   private wishlistService = inject(WishlistService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private languageService = inject(LanguageService);
+
+  id = input.required<string>();
 
   movie = signal<MovieDetails | null>(null);
   recommendations = signal<Movie[]>([]);
@@ -35,14 +36,20 @@ export class MovieDetailsComponent implements OnInit {
         this.loadMovieDetails();
       }
     });
-  }
-  ngOnInit() {
-    this.loadMovieDetails();
+
+    effect(() => {
+      const movieId = this.id();
+      if (movieId) {
+        this.movieId = Number(movieId);
+        this.movie.set(null);
+        this.loading.set(true);
+        this.loadMovieDetails();
+      }
+    });
   }
 
   async loadMovieDetails() {
     try {
-      this.movieId = Number(this.route.snapshot.paramMap.get('id'))
       console.log('Loading movie details for ID:', this.movieId);
       this.movie.set(await this.movieService.getMovieDetails(this.movieId));
       this.loadRecommendations();
