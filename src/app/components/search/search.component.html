@@ -65,15 +65,20 @@
                 <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
               </div>
               
-              <h3>{{ movie.title }}</h3>
+              <div class="title-container">
+                <h3>{{ movie.title }}</h3>
+              </div>
+              
               <div class="movie-meta">
                 <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
-                <img 
-                  [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
-                  alt="Toggle Wishlist"
-                  class="heart-icon"
-                  (click)="toggleWishlist($event, movie)"
-                >
+                <div class="heart-container">
+                  <img 
+                    [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                    alt="Toggle Wishlist"
+                    class="heart-icon"
+                    (click)="toggleWishlist($event, movie)"
+                  >
+                </div>
               </div>
             </div>
           </div>
