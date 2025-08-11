@@ -38,11 +38,46 @@ export class ContentTabsComponent implements OnInit {
   canGoPreviousTV = computed(() => this.tvPage() > 1);
   canGoNextTV = computed(() => this.tvPage() < this.tvTotalPages());
 
+  moviesWithRating = computed(() => {
+    return this.movies().map(movie => ({
+      ...movie,
+      ratingClass: this.getRatingClass(movie.vote_average),
+      formattedRating: (movie.vote_average * 10).toFixed(0),
+      isInWishlist: this.wishlistService.isInWishlist()(movie.id),
+      imageUrl: this.getImageUrl(movie.poster_path)
+    }));
+  });
+
+  visibleMoviePages = computed(() => {
+    const current = this.moviesPage();
+    const total = this.moviesTotalPages();
+    const pages: number[] = [];
+    
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        pages.push(i);
+      }
+    } else {
+      const start = Math.max(1, Math.min(current - 2, total - 4));
+      const end = Math.min(total, start + 4);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
+  });
+
+  private getRatingClass(rating: number): string {
+    if (rating >= 7) return 'good';
+    if (rating >= 5) return 'average';
+    return 'poor';
+  }
+
   constructor() {
     effect(() => {
       this.languageService.getCurrentLanguage();
-
-      console.log('Language changed, reloading data...');
       this.loadMovies();
       this.loadTVShows();
     });
@@ -134,30 +169,6 @@ export class ContentTabsComponent implements OnInit {
     this.wishlistService.toggleWishlist(wishlistItem);
   }
 
-  getVisiblePages(): number[] {
-    const current = this.moviesPage();
-    const total = this.moviesTotalPages();
-    const pages: number[] = [];
-
-    if (total <= 7) {
-      for (let i = 1; i <= total; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, Math.min(current - 2, total - 4));
-      const end = Math.min(total, start + 4);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    }
-
-    return pages;
-  }
-
-  isInWishlist(id: number): boolean {
-    return this.wishlistService.isInWishlist()(id);
-  }
 
   getImageUrl(path: string | null): string {
     return this.movieService.getImageUrl(path);
