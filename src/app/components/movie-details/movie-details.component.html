@@ -12,7 +12,7 @@
   @else if (movie()) {
     <div class="movie-details">
       <div class="hero">
-        <img [src]="getImageUrl(movie()!.poster_path)" [alt]="movie()!.title" class="poster">
+        <img [src]="movieImageUrl()" [alt]="movie()!.title" class="poster">
         
         <div class="movie-content">
           <div class="movie-header">
@@ -22,15 +22,15 @@
           
           <div class="rating-section">
             <div class="star-rating">
-              @for (star of getStars(movie()!.vote_average); track $index) {
+              @for (star of stars(); track $index) {
                 <img 
-                  [class]="star.filled ? 'star-filled' : 'star-empty'" 
-                  [src]="star.filled ? '/assets/fillStar.png' : '/assets/emptyStar.png'"
-                  [alt]="star.filled ? 'Filled star' : 'Empty star'"
+                  [class]="star.cssClass" 
+                  [src]="star.imageSrc"
+                  [alt]="star.altText"
                 >
               }
             </div>
-            <span class="rating-number">{{ (movie()!.vote_average * 1000) | number:'1.0-0' }}</span>
+            <span class="rating-number">{{ formattedRating() }}</span>
           </div>
           
           <p class="movie-description">{{ movie()!.overview }}</p>
@@ -57,17 +57,17 @@
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Marvel_Logo.svg/320px-Marvel_Logo.svg.png" alt="Marvel Studios" />
             </div>
             
-            <a href="#" class="website-link">
+            <a [href]="movie()!.homepage" target="_blank" class="website-link" *ngIf="movie()!.homepage">
               Website
               <img src="/assets/link.png" alt="External link">
             </a>
           </div>
         </div>
         
-        <button class="wishlist-heart" (click)="toggleWishlist(movie()!)" [class.active]="isInWishlist(movie()!.id)">
+        <button class="wishlist-heart" (click)="toggleWishlist(movie()!)" [class.active]="wishlistButtonData().isInWishlist">
           <img 
-            [src]="isInWishlist(movie()!.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
-            [alt]="isInWishlist(movie()!.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+            [src]="wishlistButtonData().imageSrc"
+            [alt]="wishlistButtonData().altText"
           >
         </button>
       </div>
@@ -77,23 +77,36 @@
       <div class="recommendations">
         <h2>Recommendations</h2>
         <div class="recommendations-grid">
-          @for (rec of recommendations(); track rec.id) {
+          @for (rec of recommendationsWithRating(); track rec.id) {
             <div class="recommendation-card" (click)="onRecommendationSelected(rec.id)">
               <img 
-                [src]="getImageUrl(rec.poster_path)" 
+                [src]="rec.imageUrl" 
                 [alt]="rec.title"
                 class="rec-poster"
               >
-              <div 
-                class="rating-badge"
-                [class.good]="rec.vote_average >= 7"
-                [class.average]="rec.vote_average >= 5 && rec.vote_average < 7"
-                [class.poor]="rec.vote_average < 5">
-                <span>{{ (rec.vote_average * 10) | number:'1.0-0' }}</span>
-              </div>
+              
               <div class="rec-info">
-                <h4>{{ rec.title }}</h4>
-                <p class="rec-date">{{ rec.release_date | date:'MMM dd, yyyy' }}</p>
+                <div 
+                  class="rating-circle"
+                  [class]="rec.ratingClass">
+                  <span>{{ rec.formattedRating }}</span>
+                </div>
+                
+                <div class="title-container">
+                  <h3>{{ rec.title }}</h3>
+                </div>
+                
+                <div class="movie-meta">
+                  <span class="movie-date">{{ rec.release_date | date:'MMM dd, yyyy' }}</span>
+                  <div class="heart-container">
+                    <img 
+                      [src]="wishlistService.isInWishlist()(rec.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                      [alt]="wishlistService.isInWishlist()(rec.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                      class="heart-icon"
+                      (click)="toggleRecommendationWishlist($event, rec)"
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           }
