@@ -24,7 +24,5 @@ export class NavigationComponent {
     this.router.navigate(['/']);
   }
 
-  get wishlistCount() {
-    return this.wishlistService.wishlistCount();
-  }
+  wishlistCount = this.wishlistService.wishlistCount;
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 
@@ -11,6 +11,13 @@ import { LanguageService } from '../../services/language.service';
 })
 export class LanguageSelectorComponent {
   languageService = inject(LanguageService);
+
+  languagesWithDisplayText = computed(() => {
+    return this.languageService.getAvailableLanguages().map(language => ({
+      ...language,
+      displayText: language.code === 'ar' ? language.name : language.code.toUpperCase().slice(0, 2)
+    }));
+  });
 
   onLanguageChange(event: Event): void {
     const target = event.target as HTMLSelectElement;

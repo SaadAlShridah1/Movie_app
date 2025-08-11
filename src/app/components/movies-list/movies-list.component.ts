@@ -31,15 +31,29 @@ export class MoviesListComponent {
   canGoPrevious = computed(() => this.currentPage() > 1);
   canGoNext = computed(() => this.currentPage() < this.totalPages());
 
+  moviesWithRating = computed(() => {
+    return this.movies().map(movie => ({
+      ...movie,
+      ratingClass: this.getRatingClass(movie.vote_average),
+      formattedRating: (movie.vote_average * 10).toFixed(0),
+      isInWishlist: this.wishlistService.isInWishlist()(movie.id),
+      imageUrl: this.getImageUrl(movie.poster_path)
+    }));
+  });
+
+  private getRatingClass(rating: number): string {
+    if (rating >= 7) return 'good';
+    if (rating >= 5) return 'average';
+    return 'poor';
+  }
+
   constructor() {
     this.loadMovies(); 
-     effect(() => {
-     const currentLang = this.languageService.getCurrentLanguage();
-     console.log('Language changed to:', currentLang.code);
-     this.currentPage.set(1);
-     this.loadMovies();
+    effect(() => {
+      this.languageService.getCurrentLanguage();
+      this.currentPage.set(1);
+      this.loadMovies();
     });
-
   }
   async loadMovies() {
     try {
@@ -51,7 +65,6 @@ export class MoviesListComponent {
       this.loading.set(false);
 
     } catch {
-      console.error('Error loading movies:', this.error);
       this.error.set('Failed to load movies');
       this.loading.set(false);
     }
@@ -79,10 +92,7 @@ export class MoviesListComponent {
   }
   toggleWishlist(event: Event, movie: Movie) {
     event.stopPropagation(); 
-      this.wishlistService.toggleWishlist(movie);
-  }
-  isInWishlist(movieId: number): boolean {
-    return this.wishlistService.isInWishlist()(movieId);
+    this.wishlistService.toggleWishlist({ ...movie, type: 'movie' });
   }
   getImageUrl(path: string | null): string {
     return this.movieService.getImageUrl(path);

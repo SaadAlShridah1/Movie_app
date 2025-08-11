@@ -15,20 +15,18 @@
   
   @else {
     <div class="movies-grid">
-      @for (movie of movies(); track movie.id) {
+      @for (movie of moviesWithRating(); track movie.id) {
         <div class="movie-card" (click)="goToMovieDetails(movie.id)">
           <img 
-            [src]="getImageUrl(movie.poster_path)"
+            [src]="movie.imageUrl"
             [alt]="movie.title"
             class="movie-poster"
           >
           
           <div 
             class="rating-circle"
-            [class.good]="movie.vote_average >= 7"
-            [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
-            [class.poor]="movie.vote_average < 5">
-            {{ (movie.vote_average * 10) | number:'1.0-0' }}%
+            [class]="movie.ratingClass">
+            {{ movie.formattedRating }}%
           </div>
           
           <div class="movie-info">
@@ -37,7 +35,7 @@
               <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
               <svg 
                 class="heart-icon"
-                [class.active]="isInWishlist(movie.id)"
+                [class.active]="movie.isInWishlist"
                 (click)="toggleWishlist($event, movie)"
                 fill="currentColor" 
                 viewBox="0 0 24 24">

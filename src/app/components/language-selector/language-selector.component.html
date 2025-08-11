@@ -5,9 +5,9 @@
     [value]="languageService.getCurrentLanguage().code"
     (change)="onLanguageChange($event)"
     aria-label="Select Language">
-    @for (language of languageService.getAvailableLanguages(); track language.code) {
+    @for (language of languagesWithDisplayText(); track language.code) {
       <option [value]="language.code">
-        {{ language.code === 'ar' ? language.name : language.code.toUpperCase().slice(0, 2) }}
+        {{ language.displayText }}
       </option>
     }
   </select>

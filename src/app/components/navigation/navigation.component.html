@@ -12,8 +12,8 @@
           <img src="/assets/heart.png" alt="wishlist">
         </span>
         <span class="wishlist-text">Wishlist</span>
-        @if (wishlistCount > 0) {
-          <span class="wishlist-counter">{{ wishlistCount }}</span>
+        @if (wishlistCount() > 0) {
+          <span class="wishlist-counter">{{ wishlistCount() }}</span>
         }
       </button>
     </div>
