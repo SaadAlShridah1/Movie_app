@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Movie, MovieDetails, MovieResponse, Recommendation, Review, ReviewsResponse, TVShow, TVShowDetails, TVShowResponse } from '../interfaces/movie.interface';
 import { LanguageService } from './language.service';
@@ -12,6 +12,8 @@ export class MovieService {
   private baseUrl = environment.api.tmdb.baseUrl;
   private apiKey = environment.api.tmdb.token; 
   private imageBaseUrl = environment.api.tmdb.imageBaseUrl;
+
+  private currentLanguageCode = computed(() => this.languageService.getCurrentLanguage().code);
 
   private moviesSignal = signal<Movie[]>([]);
   private tvShowsSignal = signal<TVShow[]>([]);
@@ -38,7 +40,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/movie/now_playing`;
       const params = {
         api_key: this.apiKey,
@@ -62,7 +64,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/search/movie`;
       
       const params = {
@@ -92,7 +94,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/movie/${movieId}`;
       
       const params = {
@@ -120,7 +122,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/movie/${movieId}/recommendations`;
       
       const params = {
@@ -150,7 +152,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/movie/${movieId}/reviews`;
       
       const params = {
@@ -180,7 +182,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/tv/popular`;
       
       const params = {
@@ -210,7 +212,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/tv/${tvId}`;
       
       const params = {
@@ -239,7 +241,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/tv/${tvId}/recommendations`;
       
       const params = {
@@ -269,7 +271,7 @@ export class MovieService {
       this.loadingSignal.set(true);
       this.errorSignal.set('');
       
-      const language = this.languageService.getCurrentLanguage().code;
+      const language = this.currentLanguageCode();
       const url = `${this.baseUrl}/tv/${tvId}/reviews`;
       
       const params = {
