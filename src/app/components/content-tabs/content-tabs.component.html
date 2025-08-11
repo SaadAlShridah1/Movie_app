@@ -37,10 +37,10 @@
     
     @else {
       <div class="content-grid">
-        @for (movie of movies().slice(0, 12); track movie.id) {
+        @for (movie of moviesWithRating().slice(0, 12); track movie.id) {
           <div class="content-card" (click)="goToMovieDetails(movie.id)">
             <img 
-              [src]="getImageUrl(movie.poster_path)"
+              [src]="movie.imageUrl"
               [alt]="movie.title"
               class="content-poster"
             >
@@ -48,10 +48,8 @@
             <div class="content-info">
               <div 
                 class="rating-circle"
-                [class.good]="movie.vote_average >= 7"
-                [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
-                [class.poor]="movie.vote_average < 5">
-                <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
+                [class]="movie.ratingClass">
+                <span>{{ movie.formattedRating }}</span>
               </div>
               
               <div class="title-container">
@@ -59,8 +57,8 @@
                 <span class="movie-date-rtl">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
                 <div class="heart-container-rtl">
                   <img 
-                    [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
-                    [alt]="isInWishlist(movie.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                    [src]="movie.isInWishlist ? '/assets/heart3.png' : '/assets/heart2.png'"
+                    [alt]="movie.isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'"
                     class="heart-icon"
                     (click)="toggleMovieWishlist($event, movie)"
                   >
@@ -71,8 +69,8 @@
                 <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
                 <div class="heart-container">
                   <img 
-                    [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
-                    [alt]="isInWishlist(movie.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                    [src]="movie.isInWishlist ? '/assets/heart3.png' : '/assets/heart2.png'"
+                    [alt]="movie.isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'"
                     class="heart-icon"
                     (click)="toggleMovieWishlist($event, movie)"
                   >
@@ -99,7 +97,7 @@
             }
           }
           
-          @for (page of getVisiblePages(); track page) {
+          @for (page of visibleMoviePages(); track page) {
             <button 
               class="page-btn"
               [class.active]="page === moviesPage()"
@@ -109,10 +107,7 @@
           }
           
           @if (moviesPage() < moviesTotalPages() - 2) {
-            @if (moviesPage() < moviesTotalPages() - 3) {
-              <span class="dots">...</span>
-            }
-            <button class="page-btn" (click)="goToMoviesPage(moviesTotalPages())">{{ moviesTotalPages() }}</button>
+            <span class="dots">...</span>
           }
         </div>
         
