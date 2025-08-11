@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal, input } from '@angular/core';
+import { Component, effect, inject, signal, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
@@ -15,9 +15,10 @@ import { LanguageService } from '../../services/language.service';
 })
 export class MovieDetailsComponent {
   private movieService = inject(MovieService);
-  private wishlistService = inject(WishlistService);
-  private router = inject(Router);
   private languageService = inject(LanguageService);
+  private router = inject(Router);
+  
+  wishlistService = inject(WishlistService);
 
   id = input.required<string>();
 
@@ -50,14 +51,11 @@ export class MovieDetailsComponent {
 
   async loadMovieDetails() {
     try {
-      console.log('Loading movie details for ID:', this.movieId);
       this.movie.set(await this.movieService.getMovieDetails(this.movieId));
       this.loadRecommendations();
-      console.log('Movie data loaded:', this.movie);
       this.loading.set(false);
     }
     catch{
-      console.error('Error loading movie:', this.error);
       this.error.set('Failed to load movie details');
     }
     finally {
@@ -110,14 +108,64 @@ export class MovieDetailsComponent {
     return this.movieService.getBackdropUrl(path);
   }
 
-  getStars(rating: number): { filled: boolean }[] {
+  stars = computed(() => {
+    const movie = this.movie();
+    if (!movie) return [];
+    
     const stars = [];
-    const fullStars = Math.floor(rating / 2);
+    const fullStars = Math.floor(movie.vote_average / 2);
     
     for (let i = 0; i < 5; i++) {
-      stars.push({ filled: i < fullStars });
+      stars.push({ 
+        filled: i < fullStars,
+        cssClass: i < fullStars ? 'star-filled' : 'star-empty',
+        imageSrc: i < fullStars ? '/assets/fillStar.png' : '/assets/emptyStar.png',
+        altText: i < fullStars ? 'Filled star' : 'Empty star'
+      });
     }
     
     return stars;
+  });
+
+  formattedRating = computed(() => {
+    const movie = this.movie();
+    return movie ? (movie.vote_average * 1000).toFixed(0) : '0';
+  });
+
+  recommendationsWithRating = computed(() => {
+    return this.recommendations().map(rec => ({
+      ...rec,
+      ratingClass: this.getRatingClass(rec.vote_average),
+      formattedRating: (rec.vote_average * 10).toFixed(0),
+      imageUrl: this.getImageUrl(rec.poster_path)
+    }));
+  });
+
+  wishlistButtonData = computed(() => {
+    const movie = this.movie();
+    if (!movie) return { isInWishlist: false, imageSrc: '/assets/heart2.png', altText: 'Add to Wishlist' };
+    
+    const inWishlist = this.isInWishlist(movie.id);
+    return {
+      isInWishlist: inWishlist,
+      imageSrc: inWishlist ? '/assets/heart3.png' : '/assets/heart2.png',
+      altText: inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'
+    };
+  });
+
+  movieImageUrl = computed(() => {
+    const movie = this.movie();
+    return movie ? this.getImageUrl(movie.poster_path) : '';
+  });
+
+  toggleRecommendationWishlist(event: Event, movie: Movie) {
+    event.stopPropagation();
+    this.wishlistService.toggleWishlist({ ...movie, type: 'movie' });
+  }
+
+  private getRatingClass(rating: number): string {
+    if (rating >= 7) return 'good';
+    if (rating >= 5) return 'average';
+    return 'poor';
   }
 }
