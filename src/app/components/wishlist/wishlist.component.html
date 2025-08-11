@@ -2,47 +2,47 @@
   <div class="wishlist-header">
     <h1>Watch list</h1>
     
-    @if (wishlistCount > 0) {
+    @if (wishlistCount() > 0) {
       <div class="wishlist-tabs">
         <button 
           class="tab-btn"
           [class.active]="activeTab() === 'all'"
           (click)="setActiveTab('all')">
-          All ({{ wishlistCount }})
+          All ({{ wishlistCount() }})
         </button>
         <button 
           class="tab-btn"
           [class.active]="activeTab() === 'movies'"
           (click)="setActiveTab('movies')">
-          Movies ({{ movieCount }})
+          Movies ({{ movieCount() }})
         </button>
         <button 
           class="tab-btn"
           [class.active]="activeTab() === 'tv'"
           (click)="setActiveTab('tv')">
-          TV Shows ({{ tvCount }})
+          TV Shows ({{ tvCount() }})
         </button>
       </div>
     }
   </div>
 
-  @if (wishlistCount > 0) {
+  @if (wishlistCount() > 0) {
     <div class="wishlist-content">
-      @if (displayItems.length === 0) {
+      @if (itemsWithRating().length === 0) {
         <div class="empty-state">
           <div class="empty-icon">
             <img src="assets/heart_slash.png" alt="Empty wishlist">
           </div>
-          <p>No {{ activeTab() === 'movies' ? 'Movies' : activeTab() === 'tv' ? 'TV Shows' : 'items' }} in watch list</p>
+          <p>{{ emptyStateText() }}</p>
           <button class="back-to-home-btn" (click)="goBack()">Back to home</button>
         </div>
       }
       @else {
         <div class="wishlist-grid">
-          @for (item of displayItems; track item.id + '-' + item.type) {
+          @for (item of itemsWithRating(); track item.id + '-' + item.type) {
             <div class="wishlist-card" (click)="goToDetails(item)">
               <img 
-                [src]="getImageUrl(item.poster_path)"
+                [src]="item.imageUrl"
                 [alt]="item.title"
                 class="wishlist-poster">
               
@@ -54,18 +54,18 @@
                 </p>
                 
                 <div class="rating-stars">
-                  @for (star of getStars(item.vote_average); track $index) {
+                  @for (star of item.starsArray; track $index) {
                     <img 
-                      [class]="star.filled ? 'star-filled' : 'star-empty'" 
-                      [src]="star.filled ? '/assets/fillStar.png' : '/assets/emptyStar.png'"
-                      [alt]="star.filled ? 'Filled star' : 'Empty star'"
+                      [class]="star.cssClass" 
+                      [src]="star.imageSrc"
+                      [alt]="star.altText"
                     >
                   }
-                  <span class="rating-number">{{ (item.vote_average * 1000) | number:'1.0-0' }}</span>
+                  <span class="rating-number">{{ item.formattedRating }}</span>
                 </div>
                 
                 <p class="movie-description">
-                  {{ getMovieDescription(item) }}
+                  {{ item.description }}
                 </p>
                 
                 <img 

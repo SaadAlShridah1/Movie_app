@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
@@ -11,48 +11,64 @@ import { WishlistService } from '../../services/wishlist.service';
   styleUrls: ['./wishlist.component.scss']
 })
 export class WishlistComponent {
-movie() {
-throw new Error('Method not implemented.');
-}
   wishlistService = inject(WishlistService);
   private router = inject(Router);
 
   activeTab = signal<'all' | 'movies' | 'tv'>('all');
 
-  get allWishlistItems() {
-    return this.wishlistService.getWishlistItems();
-  }
+  allWishlistItems = computed(() => this.wishlistService.getWishlistItems());
+  movieItems = computed(() => this.wishlistService.getMovieItems());
+  tvItems = computed(() => this.wishlistService.getTVItems());
+  wishlistCount = computed(() => this.wishlistService.wishlistCount());
+  movieCount = computed(() => this.wishlistService.movieCount());
+  tvCount = computed(() => this.wishlistService.tvCount());
   
-  get movieItems() {
-    return this.wishlistService.getMovieItems();
-  }
+  emptyStateText = computed(() => {
+    const activeTab = this.activeTab();
+    const itemType = activeTab === 'movies' ? 'Movies' : activeTab === 'tv' ? 'TV Shows' : 'items';
+    return `No ${itemType} in watch list`;
+  });
 
-  get tvItems() {
-    return this.wishlistService.getTVItems();
-  }
-
-  get wishlistCount() {
-    return this.wishlistService.wishlistCount();
-  }
-  
-  get movieCount() {
-    return this.wishlistService.movieCount();
-  }
-
-  get tvCount() {
-    return this.wishlistService.tvCount();
-  }
-  
-  get displayItems() {
+  itemsWithRating = computed(() => {
+    let items;
     switch (this.activeTab()) {
-      case 'movies':
-        return this.movieItems;
-      case 'tv':
-        return this.tvItems;
-      default:
-        return this.allWishlistItems;
+      case 'movies': items = this.movieItems(); break;
+      case 'tv': items = this.tvItems(); break;
+      default: items = this.allWishlistItems(); break;
     }
+    
+    return items.map(item => ({
+      ...item,
+      starsArray: this.getStars(item.vote_average),
+      formattedRating: (item.vote_average * 1000).toFixed(0),
+      description: this.getMovieDescription(item),
+      imageUrl: this.getImageUrl(item.poster_path)
+    }));
+  });
+
+  private getStars(rating: number): { filled: boolean, cssClass: string, imageSrc: string, altText: string }[] {
+    const stars = [];
+    const fullStars = Math.floor(rating / 2);
+    
+    for (let i = 0; i < 5; i++) {
+      const filled = i < fullStars;
+      stars.push({ 
+        filled,
+        cssClass: filled ? 'star-filled' : 'star-empty',
+        imageSrc: filled ? '/assets/fillStar.png' : '/assets/emptyStar.png',
+        altText: filled ? 'Filled star' : 'Empty star'
+      });
+    }
+    
+    return stars;
   }
+
+  private getMovieDescription(item: any): string {
+    const year = new Date(item.release_date).getFullYear();
+    const type = item.type === 'tv' ? 'TV Show' : 'Movie';
+    return `${type} • ${year}`;
+  }
+
   
   setActiveTab(tab: 'all' | 'movies' | 'tv') {
     this.activeTab.set(tab);
@@ -104,25 +120,6 @@ throw new Error('Method not implemented.');
     return type === 'tv' ? 'TV Show' : 'Movie';
   }
 
-  getStars(rating: number): { filled: boolean }[] {
-    const stars = [];
-    const fullStars = Math.floor(rating / 2);
-    
-    for (let i = 0; i < 5; i++) {
-      stars.push({ filled: i < fullStars });
-    }
-    
-    return stars;
-  }
-
-  getMovieDescription(item: any): string {
-    const descriptions = {
-      'Black Widow': 'Natasha Romanoff, also known as Black Widow, confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises. Pursued by....',
-      'default': 'An exciting story that will keep you on the edge of your seat with thrilling action and compelling characters in an unforgettable adventure.'
-    };
-    
-    return descriptions[item.title as keyof typeof descriptions] || descriptions.default;
-  }
 
   getImageUrl(path: string): string {
     if (!path) return 'assets/placeholder.jpg';
