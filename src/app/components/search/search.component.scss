@@ -78,14 +78,12 @@
   display: flex;
   gap: 12px;
   width: 100%;
-  max-width: 1156px;
   justify-content: flex-start;
   align-items: center;
   flex-wrap: nowrap;
   
   .search-input {
     flex: 1;
-    max-width: 900px;
     height: 46px !important;
     opacity: 1;
     border-radius: 10px !important;
@@ -95,6 +93,8 @@
     font-family: Inter;
     background: white;
     box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
     
     &::placeholder {
       color: #999;

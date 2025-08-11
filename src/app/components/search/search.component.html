@@ -1,12 +1,12 @@
 <div class="search-container">
   <div class="search-header" [class.rtl]="isRTL()">
-    <h1>{{ getSearchTitle() }}</h1>
+    <h1>{{ searchTitle() }}</h1>
     
     <div class="search-input-container">
       <input 
         type="text" 
         class="search-input"
-        [placeholder]="getSearchPlaceholder()"
+        [placeholder]="searchPlaceholder()"
         [value]="searchQuery()"
         (input)="onSearchInputChange($event)"
         (keyup.enter)="searchMovies()"
@@ -16,17 +16,17 @@
         type="button"
         class="search-btn" 
         (click)="searchMovies()">
-        {{ getSearchButtonText() }}
+        {{ searchButtonText() }}
       </button>
       <button class="clear-btn" (click)="clearSearch()">
-        {{ getClearButtonText() }}
+        {{ clearButtonText() }}
       </button>
     </div>
   </div>
 
   @if (loading()) {
     <div class="loading">
-      <p>{{ getLoadingText() }}</p>
+      <p>{{ loadingText() }}</p>
     </div>
   }
 
@@ -38,20 +38,20 @@
 
   @else if (hasSearched() && searchResults().length === 0 && !loading()) {
     <div class="no-results">
-      <h2>{{ getNoResultsText() }} "{{ searchQuery() }}"</h2>
-      <p>{{ getTryDifferentText() }}</p>
+      <h2>{{ noResultsText() }} "{{ searchQuery() }}"</h2>
+      <p>{{ tryDifferentText() }}</p>
     </div>
   }
 
   @else if (searchResults().length > 0) {
     <div class="search-results">
-      <h2>{{ getFoundResultsText() }} {{ searchResults().length }} {{ getResultsForText() }} "{{ searchQuery() }}"</h2>
+      <h2>{{ foundResultsText() }} {{ searchResults().length }} {{ resultsForText() }} "{{ searchQuery() }}"</h2>
 
       <div class="movies-grid">
-        @for (movie of searchResults().slice(0, 12); track movie.id) {
+        @for (movie of searchResultsWithRating().slice(0, 12); track movie.id) {
           <div class="movie-card" (click)="goToMovieDetails(movie.id)">
             <img 
-              [src]="getImageUrl(movie.poster_path)"
+              [src]="movie.imageUrl"
               [alt]="movie.title"
               class="movie-poster"
             >
@@ -59,10 +59,8 @@
             <div class="movie-info">
               <div 
                 class="rating-circle"
-                [class.good]="movie.vote_average >= 7"
-                [class.average]="movie.vote_average >= 5 && movie.vote_average < 7"
-                [class.poor]="movie.vote_average < 5">
-                <span>{{ (movie.vote_average * 10) | number:'1.0-0' }}</span>
+                [class]="movie.ratingClass">
+                <span>{{ movie.formattedRating }}</span>
               </div>
               
               <div class="title-container">
@@ -73,7 +71,7 @@
                 <span class="movie-date">{{ movie.release_date | date:'MMM dd, yyyy' }}</span>
                 <div class="heart-container">
                   <img 
-                    [src]="isInWishlist(movie.id) ? '/assets/heart3.png' : '/assets/heart2.png'"
+                    [src]="movie.isInWishlist ? '/assets/heart3.png' : '/assets/heart2.png'"
                     alt="Toggle Wishlist"
                     class="heart-icon"
                     (click)="toggleWishlist($event, movie)"
@@ -102,7 +100,7 @@
               }
             }
             
-            @for (page of getVisiblePages(); track page) {
+            @for (page of visiblePages(); track page) {
               <button 
                 class="page-btn"
                 [class.active]="page === currentPage()"
@@ -112,10 +110,7 @@
             }
             
             @if (currentPage() < totalPages() - 2) {
-              @if (currentPage() < totalPages() - 3) {
-                <span class="dots">...</span>
-              }
-              <button class="page-btn" (click)="goToPage(totalPages())">{{ totalPages() }}</button>
+              <span class="dots">...</span>
             }
           </div>
           
@@ -133,8 +128,8 @@
   @else {
     <div class="search-placeholder">
       <div class="placeholder-icon">🎬</div>
-      <h2>{{ getDiscoverTitle() }}</h2>
-      <p>{{ getDiscoverDescription() }}</p>
+      <h2>{{ discoverTitle() }}</h2>
+      <p>{{ discoverDescription() }}</p>
     </div>
   }
 </div>
